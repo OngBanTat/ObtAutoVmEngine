@@ -1,0 +1,44 @@
+﻿<Window x:Class="UI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Login" Height="200" Width="300" MaxHeight="200" MaxWidth="300"
+        KeyDown="MainWindow_OnKeyDown"
+        Loaded="MainWindow_OnLoaded"
+        WindowStartupLocation="CenterScreen"
+        Topmost="True">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Label Content="Username:" Grid.Row="0" Grid.Column="0" Margin="10" />
+        <TextBox Text="{Binding Username, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Grid.Row="0"
+                 Grid.Column="1" Margin="10" />
+
+        <Label Content="Password:" Grid.Row="1" Grid.Column="0" Margin="10" />
+        <TextBox Text="{Binding Path=Password, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Grid.Row="1"
+                 Grid.Column="1" Margin="10" />
+
+        <Button Content="Login" Grid.Row="2" Margin="47,10,0,10"
+                Name="BtnLogin"
+                HorizontalAlignment="Left" Click="LoginButton_Click"
+                RenderTransformOrigin="1.248,0.607" Grid.Column="1" />
+
+
+        <!-- <TextBlock Grid.Row="3" Grid.ColumnSpan="2" Grid.Column="0" VerticalAlignment="Bottom" Margin="0,0,5,5" -->
+        <!--            HorizontalAlignment="Right"> -->
+        <!--     <Hyperlink NavigateUri="https://ongbantat.store/#/list?page=61&amp;usingPublicSession=true" -->
+        <!--                RequestNavigate="Hyperlink_RequestNavigate"> -->
+        <!--         Powered by: Ông Bán Tất ©2024 -->
+        <!--     </Hyperlink> -->
+        <!-- </TextBlock> -->
+        <Grid Grid.Row="0" Grid.Column="1" />
+    </Grid>
+</Window>

@@ -1,0 +1,122 @@
+﻿<UserControl x:Class="UI.View.AutoMenu"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             Loaded="Window_Loaded">
+    <Grid Margin="0,0,0,0">
+        <Grid MinHeight="600">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="300" />
+                <RowDefinition Height="100" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <ListView ItemsSource="{Binding ListDevices}"
+                      SelectedItem="{Binding SelectedDevice, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                      Background="#FFA5A4A4"
+                      Margin="0,-80,0,0" MaxHeight="300" MinHeight="300" Grid.RowSpan="2">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="Background" Value="White" />
+                        <Setter Property="Foreground" Value="Black" />
+                        <Setter Property="BorderBrush" Value="Gray" />
+                        <Setter Property="BorderThickness" Value="1" />
+                        <Setter Property="Height" Value="30" />
+                    </Style>
+                </ListView.ItemContainerStyle>
+                <ListView.View>
+                    <GridView>
+                        <GridView.Columns>
+                            <GridViewColumn>
+                                <GridViewColumn.Header>
+                                    <Button Content="ALL DEVICES" Click="OnBtnAllClick" />
+                                </GridViewColumn.Header>
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+
+                            </GridViewColumn>
+                            <GridViewColumn Header="TYPE" DisplayMemberBinding="{Binding DType}" />
+
+                            <GridViewColumn Header="DEVICE NAME"
+                                            DisplayMemberBinding="{Binding DeviceName}" />
+                            <GridViewColumn Header="STAGE" DisplayMemberBinding="{Binding Stage}" />
+                            <GridViewColumn Header="STATUS" Width="250" DisplayMemberBinding="{Binding Status}" />
+                            <GridViewColumn Header="ACTION" Width="250">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Button Content="Start" Click="ButtonStart_Click" />
+                                            <Button Content="Stop" Margin="15,0,0,0" Click="ButtonStop_Click" />
+                                            <Button Content="Pause" Margin="15,0,0,0" Click="ButtonPause_Click" />
+                                            <Button Content="Resume" Margin="15,0,0,0" Click="ButtonResume_Click" />
+                                            <Button Content="View" Margin="15,0,0,0"
+                                                    Click="ButtonScreenshot_Click" />
+                                            <Button Content="TEST" Margin="15,0,0,0"
+                                                    Click="ButtonTest_OnClick" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                        </GridView.Columns>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+            <Grid Grid.Row="1" Margin="0,0,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Button Content="STOP CHECKED DEVICES" Grid.Column="0" Click="BtnStopAllClick" Background="Firebrick"
+                        Height="30" Margin="3,13,3,3" FontWeight="Bold" FontSize="20" />
+                <Button Content="Mirror all windows" Grid.Column="1" Click="Button_MirrorAll_Click" Background="Snow"
+                        Height="30" Margin="3,13,3,3" FontWeight="Bold" FontSize="20" />
+                <Button Content="START CHECKED DEVICES" Grid.Column="2" Click="BtnRunAllClick" Background="Chartreuse"
+                        Height="30" Margin="3,13,3,3" FontWeight="Bold" FontSize="20" />
+            </Grid>
+            <Grid Grid.Row="2" Margin="0,0,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid Column="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                  
+                </Grid>
+                <Grid Column="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                </Grid>
+                <Grid Column="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                </Grid>
+            </Grid>
+        </Grid>
+    </Grid>
+</UserControl>

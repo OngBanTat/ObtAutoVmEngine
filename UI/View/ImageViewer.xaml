@@ -1,0 +1,109 @@
+﻿<Window x:Class="UI.View.ImageViewer"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:view="clr-namespace:UI.View"
+        mc:Ignorable="d"
+        KeyDown="MainCanvas_OnKeyDown"
+        MinHeight="600" MinWidth="1000" Width="1200" Height="800">
+    <Window.Resources>
+        <view:SizePlusConverter x:Key="SizePlusConverter" />
+    </Window.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <TextBlock Name="PixelInformation" HorizontalAlignment="Center" FontSize="40" FontWeight="Bold" />
+        <Grid Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBox IsReadOnly="True" Name="TxtXy" />
+                <Button Grid.Column="1" Click="CopyXY_OnClick"> Copy</Button>
+            </Grid>
+            <Grid Grid.Column="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBox IsReadOnly="True" Name="TxtPerCentXy" />
+                <Button Grid.Column="1" Click="CopyPercentXY_OnClick"> Copy</Button>
+            </Grid>
+            <Grid Grid.Column="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBox IsReadOnly="True" Name="TxtLastRect" />
+                <Button Grid.Column="1" Click="CopyLastRect_OnClick"> Copy</Button>
+            </Grid>
+            <Grid Grid.Column="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBox IsReadOnly="True" Name="TxtArgb" />
+                <Button Grid.Column="1" Click="CopyARGB_OnClick"> Copy</Button>
+            </Grid>
+
+        </Grid>
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="3" Click="ClearAllRect_OnClick"> Clear All Rect</Button>
+            <Button Grid.Column="2" Click="SaveLastRect_OnClick"> Save last rect to image</Button>
+            <Button Grid.Column="0" Click="PauseMirror_OnClick"> Pause Mirror</Button>
+            <Button Grid.Column="1" Click="ContinueMirror_OnClick"> Continue Mirror</Button>
+
+        </Grid>
+
+        <Grid Grid.Row="3">
+
+            <ScrollViewer
+                Margin="0,0,0,0"
+                VerticalScrollBarVisibility="Auto"
+                HorizontalScrollBarVisibility="Auto"
+                MouseLeftButtonUp="ScrollViewer_MouseLeftButtonUp"
+                MouseMove="ScrollViewer_MouseMove"
+                MouseLeftButtonDown="ScrollViewer_MouseLeftButtonDown"
+                MouseWheel="ScrollViewer_MouseWheel"
+                PreviewMouseWheel="ScrollViewer_MouseWheel"
+                CanContentScroll="True">
+                <Grid>
+                    <Canvas
+                        Width="{Binding ElementName=ImgView, Path=ActualWidth}"
+                        Height="{Binding ElementName=ImgView, Path=ActualHeight,Converter={StaticResource SizePlusConverter}}"
+                        x:Name="MainCanvas"
+                        Background="Transparent"
+                        MouseLeftButtonDown="MainCanvas_MouseLeftButtonDown"
+                        MouseMove="MainCanvas_MouseMove"
+                        MouseLeftButtonUp="MainCanvas_MouseLeftButtonUp"
+                        MouseDown="MainCanvas_OnMouseDown"
+                        MouseRightButtonDown="MainCanvas_OnMouseRightButtonDown">
+
+                        <Image
+                            MouseRightButtonDown="ImageViewer_OnMouseRightClick" MouseMove="Image_MouseMove"
+                            Name="ImgView" Stretch="Uniform" />
+                    </Canvas>
+                </Grid>
+            </ScrollViewer>
+        </Grid>
+
+    </Grid>
+</Window>

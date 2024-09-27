@@ -1,0 +1,98 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>net462</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <UseWPF>true</UseWPF>
+        <LangVersion>latest</LangVersion>
+        <Company>OBT</Company>
+        <Product>AUTO_TGPT</Product>
+        <AssemblyVersion>3.3.1</AssemblyVersion>
+        <FileVersion>3.3.1</FileVersion>
+        <NeutralLanguage>vi</NeutralLanguage>
+        <AssemblyName>Launcher</AssemblyName>
+        <ApplicationIcon>assets\logo.ico</ApplicationIcon>
+        <IsPackable>false</IsPackable>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+        <PlatformTarget>AnyCPU</PlatformTarget>
+        <OutputType>WinExe</OutputType>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+        <PlatformTarget>AnyCPU</PlatformTarget>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Reference Include="KAutoHelper">
+            <HintPath>Lib\KAutoHelper.dll</HintPath>
+        </Reference>
+        <Reference Include="ObtSDK">
+            <HintPath>LibFake\ObtSDK.dll</HintPath>
+        </Reference>
+        <Reference Include="Sentry">
+            <HintPath>Lib\Sentry.dll</HintPath>
+        </Reference>
+        <Reference Include="System.Net.Http"/>
+        <Reference Include="System.Windows.Forms"/>
+        <Reference Include="WindowsFormsIntegration"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Content Include="assets\**">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Remove="assets\itemban\**"/>
+        <Content Remove="assets\itemdonkho\**"/>
+        <Content Remove="assets\locitemban\**"/>
+        <Content Remove="assets\skillauto\**"/>
+        <Content Remove="assets\data\LDPlayer\bangsetuptrain\**"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Remove="assets\itemban\**"/>
+        <Compile Remove="assets\itemdonkho\**"/>
+        <Compile Remove="assets\locitemban\**"/>
+        <Compile Remove="assets\skillauto\**"/>
+        <Compile Remove="assets\data\LDPlayer\bangsetuptrain\**"/>
+        <Compile Remove="Lib\**"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <EmbeddedResource Remove="assets\itemban\**"/>
+        <EmbeddedResource Remove="assets\itemdonkho\**"/>
+        <EmbeddedResource Remove="assets\locitemban\**"/>
+        <EmbeddedResource Remove="assets\skillauto\**"/>
+        <EmbeddedResource Remove="assets\data\LDPlayer\bangsetuptrain\**"/>
+        <EmbeddedResource Remove="Lib\**"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Page Remove="assets\itemban\**"/>
+        <Page Remove="assets\itemdonkho\**"/>
+        <Page Remove="assets\locitemban\**"/>
+        <Page Remove="assets\skillauto\**"/>
+        <Page Remove="assets\data\LDPlayer\bangsetuptrain\**"/>
+        <Page Remove="Lib\**"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Remove="assets\itemban\**"/>
+        <None Remove="assets\itemdonkho\**"/>
+        <None Remove="assets\locitemban\**"/>
+        <None Remove="assets\skillauto\**"/>
+        <None Remove="assets\data\LDPlayer\bangsetuptrain\**"/>
+        <None Remove="Lib\**"/>
+    </ItemGroup>
+
+    <!--    <Target Name="ConfuserEx" AfterTargets="Build" Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">-->
+    <!--        <Exec Command="&quot;$(SolutionDir)ilmerge\3.0.41\tools\net452\ilmerge.exe&quot; /out:&quot;$(TargetDir)Launcher.exe&quot; &quot;$(TargetPath)&quot; &quot;$(TargetDir)Helper.dll&quot;  /targetplatform:v4,&quot;C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.2&quot;&#xA;"/>-->
+    <!--    </Target>-->
+
+    <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+      <Exec Command="xcopy /E /I /Y &quot;$(ProjectDir)Lib\*&quot; &quot;$(TargetDir)&quot;&#xA;..\ConfuserEx2\Confuser.CLI.exe confuser.crproj&#xA;del &quot;$(TargetDir)*.pdb&quot;&#xA;" />
+    </Target>
+</Project>
