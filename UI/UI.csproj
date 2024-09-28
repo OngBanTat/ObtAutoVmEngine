@@ -59,6 +59,7 @@
         <Compile Remove="assets\skillauto\**"/>
         <Compile Remove="assets\data\LDPlayer\bangsetuptrain\**"/>
         <Compile Remove="Lib\**"/>
+        <Compile Remove="LibFake\**" />
     </ItemGroup>
 
     <ItemGroup>
@@ -68,6 +69,7 @@
         <EmbeddedResource Remove="assets\skillauto\**"/>
         <EmbeddedResource Remove="assets\data\LDPlayer\bangsetuptrain\**"/>
         <EmbeddedResource Remove="Lib\**"/>
+        <EmbeddedResource Remove="LibFake\**" />
     </ItemGroup>
 
     <ItemGroup>
@@ -77,6 +79,7 @@
         <Page Remove="assets\skillauto\**"/>
         <Page Remove="assets\data\LDPlayer\bangsetuptrain\**"/>
         <Page Remove="Lib\**"/>
+        <Page Remove="LibFake\**" />
     </ItemGroup>
 
     <ItemGroup>
@@ -86,13 +89,14 @@
         <None Remove="assets\skillauto\**"/>
         <None Remove="assets\data\LDPlayer\bangsetuptrain\**"/>
         <None Remove="Lib\**"/>
+        <None Remove="LibFake\**" />
     </ItemGroup>
 
     <!--    <Target Name="ConfuserEx" AfterTargets="Build" Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">-->
     <!--        <Exec Command="&quot;$(SolutionDir)ilmerge\3.0.41\tools\net452\ilmerge.exe&quot; /out:&quot;$(TargetDir)Launcher.exe&quot; &quot;$(TargetPath)&quot; &quot;$(TargetDir)Helper.dll&quot;  /targetplatform:v4,&quot;C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.2&quot;&#xA;"/>-->
     <!--    </Target>-->
 
-    <Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
       <Exec Command="xcopy /E /I /Y &quot;$(ProjectDir)Lib\*&quot; &quot;$(TargetDir)&quot;&#xA;..\ConfuserEx2\Confuser.CLI.exe confuser.crproj&#xA;del &quot;$(TargetDir)*.pdb&quot;&#xA;" />
     </Target>
 </Project>
