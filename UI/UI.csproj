@@ -31,7 +31,7 @@
             <HintPath>Lib\KAutoHelper.dll</HintPath>
         </Reference>
         <Reference Include="ObtSDK">
-            <HintPath>LibFake\ObtSDK.dll</HintPath>
+          <HintPath>LibFake\ObtSDK.dll</HintPath>
         </Reference>
         <Reference Include="Sentry">
             <HintPath>Lib\Sentry.dll</HintPath>
@@ -97,6 +97,10 @@
     <!--    </Target>-->
 
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-      <Exec Command="xcopy /E /I /Y &quot;$(ProjectDir)Lib\*&quot; &quot;$(TargetDir)&quot;&#xA;..\ConfuserEx2\Confuser.CLI.exe confuser.crproj&#xA;del &quot;$(TargetDir)*.pdb&quot;&#xA;" />
+      <Exec Command="xcopy /E /I /Y &quot;$(ProjectDir)Lib\ObtSDK.dll&quot; &quot;$(TargetDir)&quot;&#xA;..\ConfuserEx2\Confuser.CLI.exe confuser.crproj&#xA;del &quot;$(TargetDir)*.pdb&quot;&#xA;" />
+    </Target>
+
+    <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+      <Exec Command="xcopy /E /I /Y &quot;$(ProjectDir)Lib\*&quot; &quot;$(TargetDir)&quot;" />
     </Target>
 </Project>
