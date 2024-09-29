@@ -45,6 +45,7 @@
                                             DisplayMemberBinding="{Binding DeviceName}" />
                             <GridViewColumn Header="STAGE" DisplayMemberBinding="{Binding Stage}" />
                             <GridViewColumn Header="STATUS" Width="250" DisplayMemberBinding="{Binding Status}" />
+                            <GridViewColumn Header="Thread Stage" Width="1" DisplayMemberBinding="{Binding TStage}" />
                             <GridViewColumn Header="ACTION" Width="250">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
