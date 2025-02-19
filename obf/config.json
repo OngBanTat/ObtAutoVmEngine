@@ -1,0 +1,24 @@
+﻿{
+	"outputDir": ".",
+	"baseDir": "../Launcher/bin/Release/net462",
+	"rules": {
+		"protections": {
+			"rename": false,
+			"debug": true,
+			"tamper": true,
+			"constants": true,
+			"ildasm": true,
+			"ctrlFlow": true,
+			"refProxy": true,
+			"resources": true,
+			"typescramble": false,
+			"invalidMetadata": true,
+			"harden": false,
+			"dump": true,
+			"watermark": true
+		}
+	},
+	"modules": [
+		"Launcher.exe"
+	]
+}

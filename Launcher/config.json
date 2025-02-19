@@ -1,0 +1,20 @@
+﻿{
+  "outputDir": ".",
+  "baseDir": "./bin/Release/net462",
+  "rules": {
+    "protections": {
+      "ildasm": true,
+      "ctrlFlow": true,
+      "debug": true,
+      "refProxy": true,
+      "resources": true,
+      "tamper": true,
+      "constants": true,
+      "invalidMetadata": true,
+      "harden": true
+    }
+  },
+  "modules": [
+    "Launcher.exe"
+  ]
+}

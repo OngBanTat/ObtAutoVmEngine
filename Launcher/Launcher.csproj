@@ -1,0 +1,118 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>net462</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <UseWPF>true</UseWPF>
+        <LangVersion>latest</LangVersion>
+        <Company>Ông bán tất</Company>
+        <Product>AUTO_SANDBOX</Product>
+        <AssemblyVersion>1.1</AssemblyVersion>
+        <FileVersion>1.1</FileVersion>
+        <NeutralLanguage>vi</NeutralLanguage>
+        <AssemblyName>Launcher</AssemblyName>
+        <ApplicationIcon>assets\logo.ico</ApplicationIcon>
+        <IsPackable>false</IsPackable>
+        <AssemblyOriginatorKeyFile>key.snk</AssemblyOriginatorKeyFile>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+        <PlatformTarget>AnyCPU</PlatformTarget>
+        <OutputType>WinExe</OutputType>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+        <PlatformTarget>AnyCPU</PlatformTarget>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Reference Include="KAutoHelper">
+            <HintPath>Lib\KAutoHelper.dll</HintPath>
+        </Reference>
+        <Reference Include="Microsoft.CSharp"/>
+        <Reference Include="System.Net.Http"/>
+        <Reference Include="System.Windows.Forms"/>
+        <Reference Include="WindowsFormsIntegration"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Content Include="assets\**">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Remove="..\..\..\.nuget\packages\obtsdk\1.1.0\contentFiles\any\net462\vcruntime140.dll"/>
+        <Content Remove="..\..\..\.nuget\packages\obtsdk\1.1.0\contentFiles\any\net462\opencv_ffmpeg343.dll"/>
+        <Content Remove="..\..\..\.nuget\packages\obtsdk\1.1.0\contentFiles\any\net462\msvcp140.dll"/>
+        <Content Remove="..\..\..\.nuget\packages\obtsdk\1.1.0\contentFiles\any\net462\libtesseract3052.dll"/>
+        <Content Remove="..\..\..\.nuget\packages\obtsdk\1.1.0\contentFiles\any\net462\cvextern.dll"/>
+        <Content Remove="..\..\..\.nuget\packages\obtsdk\1.1.0\contentFiles\any\net462\concrt140.dll"/>
+        <Content Remove="..\..\..\.nuget\packages\obtsdk\1.2.0\contentFiles\any\net462\concrt140.dll" />
+        <Content Remove="..\..\..\.nuget\packages\obtsdk\1.2.0\contentFiles\any\net462\libtesseract3052.dll" />
+        <Content Remove="..\..\..\.nuget\packages\obtsdk\1.2.0\contentFiles\any\net462\cvextern.dll" />
+        <Content Remove="..\..\..\.nuget\packages\obtsdk\1.2.0\contentFiles\any\net462\msvcp140.dll" />
+        <Content Remove="..\..\..\.nuget\packages\obtsdk\1.2.0\contentFiles\any\net462\opencv_ffmpeg343.dll" />
+        <Content Remove="..\..\..\.nuget\packages\obtsdk\1.2.0\contentFiles\any\net462\vcruntime140.dll" />
+
+    </ItemGroup>
+
+
+    <ItemGroup>
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
+        <PackageReference Include="ObtSDK" Version="1.2.0"/>
+        <PackageReference Include="Sentry" Version="5.1.1"/>
+    </ItemGroup>
+
+
+    <ItemGroup>
+        <Compile Remove="LibFake\**"/>
+        <Compile Remove="Lib\**"/>
+    </ItemGroup>
+
+
+    <ItemGroup>
+        <EmbeddedResource Remove="LibFake\**"/>
+        <EmbeddedResource Remove="Lib\**"/>
+    </ItemGroup>
+
+
+    <ItemGroup>
+        <Page Remove="LibFake\**"/>
+        <Page Remove="Lib\**"/>
+    </ItemGroup>
+
+
+    <ItemGroup>
+        <None Remove="LibFake\**"/>
+        <None Remove="Lib\**"/>
+        <None Update="adb\adb.exe">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="adb\ADBKeyboard.apk">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="adb\AdbWinApi.dll">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="adb\AdbWinUsbApi.dll">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="adb\clipper.apk">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Remove="key.snk" />
+        <None Remove="config.json" />
+    </ItemGroup>
+
+    <!--    <Target Name="ConfuserEx" AfterTargets="Build" Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">-->
+    <!--        <Exec Command="&quot;$(SolutionDir)ilmerge\3.0.41\tools\net452\ilmerge.exe&quot; /out:&quot;$(TargetDir)Launcher.exe&quot; &quot;$(TargetPath)&quot; &quot;$(TargetDir)Helper.dll&quot;  /targetplatform:v4,&quot;C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.2&quot;&#xA;"/>-->
+    <!--    </Target>-->
+
+    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+      <Exec Command="xcopy /E /I /Y &quot;$(ProjectDir)Lib\ObtSDK.dll&quot; &quot;$(TargetDir)&quot;&#xA;if &quot;$(ConfigurationName)&quot; == &quot;Release&quot; (&#xA;..\obf\ObtOfc.exe $(ProjectDir)config.json&#xA;)&#xA;&#xA;del &quot;$(TargetDir)*.pdb&quot;&#xA;" />
+    </Target>
+
+    <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+        <Exec Command="xcopy /E /I /Y &quot;$(ProjectDir)Lib\*&quot; &quot;$(TargetDir)&quot;"/>
+    </Target>
+</Project>
