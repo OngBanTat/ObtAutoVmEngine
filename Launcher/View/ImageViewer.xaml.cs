@@ -69,6 +69,14 @@ public partial class ImageViewer : INotifyPropertyChanged
     private double _y = 20;
     private int currentImgPosX;
     private int currentImgPosY;
+    private string _binThreshold = "128";
+
+
+    public string BinThreshold
+    {
+        get => _binThreshold;
+        set => SetField(ref _binThreshold, value);
+    }
 
     public ImageViewer(Device device)
     {
@@ -117,7 +125,12 @@ public partial class ImageViewer : INotifyPropertyChanged
         _updateImageDeviceTimer = Common.SetInterval(() =>
         {
             var img = device.GetCurrentScreen();
-            if (IsBinaryImg) img = ImageConverter.ImgToBinary(img);
+            if (IsBinaryImg)
+            {
+                var ok = int.TryParse(BinThreshold, out var threshold);
+                if (!ok||threshold<0) threshold = 128;
+                img = ImageConverter.ImgToBinary(img, threshold);
+            }
             var sizePlus = device.GetSizePlus();
             img = CaptureHelper.CropImage(img, new System.Drawing.Rectangle(0, (int)Math.Round(sizePlus.Height),
                 img.Width - (int)Math.Round(sizePlus.Width), img.Height));
@@ -377,6 +390,7 @@ public partial class ImageViewer : INotifyPropertyChanged
         _h = 0;
 
         _isInClearProcess = false;
+        ImgToTextResult.Text = "";
     }
 
     private void PauseMirror_OnClick(object sender, RoutedEventArgs e)
@@ -456,7 +470,7 @@ public partial class ImageViewer : INotifyPropertyChanged
             (int)Math.Round(_w * sx), (int)Math.Round(_h * sy)));
         // Common.CopyBitmapToClipboard(img2);
         // img2 = ImageConverter.ConvertToGrayscale(img2);
-        var ret = await _obtApiServices.Ocr(img2, CbbLanguage.Text);
+        var ret = await _obtApiServices.Ocr(img2);
         var text = ret!.Results.Aggregate("", (current, a) => current + a.Text + "\n");
 
         ImgToTextResult.Text = text; // _tesseractClient.ExtractText(img2);

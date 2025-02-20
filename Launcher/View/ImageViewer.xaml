@@ -74,22 +74,24 @@
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <CheckBox Grid.Column="0" IsChecked="{Binding IsBinaryImg, Mode=TwoWay}"> Binary </CheckBox>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="52" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <CheckBox Grid.Column="0" IsChecked="{Binding IsBinaryImg, Mode=TwoWay}"> Binary </CheckBox>
+                    <TextBox Grid.Column="1"  Text="{Binding BinThreshold, Mode=TwoWay}" />
+                </Grid>
                 <Button Grid.Column="1" Click="PauseMirror_OnClick"> Pause </Button>
                 <Button Grid.Column="2" Click="ContinueMirror_OnClick"> Continue </Button>
             </Grid>
             <Grid Grid.Column="1">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="40" />
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <ComboBox Name="CbbLanguage" SelectedIndex="2">
-                    <ComboBoxItem Content="vi" />
-                    <ComboBoxItem Content="en" />
-                </ComboBox>
-                <TextBox Grid.Column="1" Name="ImgToTextResult" />
-                <Button Grid.Column="2" Click="ImgToText"> Last box to text </Button>
+                <TextBox Grid.Column="0" Name="ImgToTextResult" />
+                <Button Grid.Column="1" Click="ImgToText"> Last box to text </Button>
             </Grid>
 
         </Grid>
