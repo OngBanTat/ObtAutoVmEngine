@@ -41,18 +41,11 @@
         <Content Include="assets\**">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
-        <Content Remove="..\..\..\.nuget\packages\obtsdk\1.1.0\contentFiles\any\net462\vcruntime140.dll"/>
-        <Content Remove="..\..\..\.nuget\packages\obtsdk\1.1.0\contentFiles\any\net462\opencv_ffmpeg343.dll"/>
-        <Content Remove="..\..\..\.nuget\packages\obtsdk\1.1.0\contentFiles\any\net462\msvcp140.dll"/>
-        <Content Remove="..\..\..\.nuget\packages\obtsdk\1.1.0\contentFiles\any\net462\libtesseract3052.dll"/>
-        <Content Remove="..\..\..\.nuget\packages\obtsdk\1.1.0\contentFiles\any\net462\cvextern.dll"/>
-        <Content Remove="..\..\..\.nuget\packages\obtsdk\1.1.0\contentFiles\any\net462\concrt140.dll"/>
-        <Content Remove="..\..\..\.nuget\packages\obtsdk\1.2.0\contentFiles\any\net462\concrt140.dll" />
-        <Content Remove="..\..\..\.nuget\packages\obtsdk\1.2.0\contentFiles\any\net462\libtesseract3052.dll" />
-        <Content Remove="..\..\..\.nuget\packages\obtsdk\1.2.0\contentFiles\any\net462\cvextern.dll" />
-        <Content Remove="..\..\..\.nuget\packages\obtsdk\1.2.0\contentFiles\any\net462\msvcp140.dll" />
-        <Content Remove="..\..\..\.nuget\packages\obtsdk\1.2.0\contentFiles\any\net462\opencv_ffmpeg343.dll" />
-        <Content Remove="..\..\..\.nuget\packages\obtsdk\1.2.0\contentFiles\any\net462\vcruntime140.dll" />
+        <Content Remove="..\..\..\.nuget\packages\obtsdk\1.3.0\contentFiles\any\net462\concrt140.dll" />
+        <Content Remove="..\..\..\.nuget\packages\obtsdk\1.3.0\contentFiles\any\net462\cvextern.dll" />
+        <Content Remove="..\..\..\.nuget\packages\obtsdk\1.3.0\contentFiles\any\net462\msvcp140.dll" />
+        <Content Remove="..\..\..\.nuget\packages\obtsdk\1.3.0\contentFiles\any\net462\opencv_ffmpeg343.dll" />
+        <Content Remove="..\..\..\.nuget\packages\obtsdk\1.3.0\contentFiles\any\net462\vcruntime140.dll" />
 
     </ItemGroup>
 
