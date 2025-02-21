@@ -9,8 +9,8 @@
         <LangVersion>latest</LangVersion>
         <Company>Ông bán tất</Company>
         <Product>AUTO_SANDBOX</Product>
-        <AssemblyVersion>1.1</AssemblyVersion>
-        <FileVersion>1.1</FileVersion>
+        <AssemblyVersion>1.3</AssemblyVersion>
+        <FileVersion>1.3</FileVersion>
         <NeutralLanguage>vi</NeutralLanguage>
         <AssemblyName>Launcher</AssemblyName>
         <ApplicationIcon>assets\logo.ico</ApplicationIcon>
@@ -59,7 +59,7 @@
 
     <ItemGroup>
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
-        <PackageReference Include="ObtSDK" Version="1.2.0"/>
+        <PackageReference Include="ObtSDK" Version="1.3.0" />
         <PackageReference Include="Sentry" Version="5.1.1"/>
     </ItemGroup>
 

@@ -2,13 +2,13 @@
 using System.Windows;
 using System.Windows.Threading;
 using ObtSDK;
+using ObtSDK.Utils;
 
 namespace Launcher;
 
 /// <summary>
 ///     Interaction logic for App.xaml
 /// </summary>
-[Obfuscation(Exclude = false, Feature = "-rename")]
 public partial class App : Application
 {
     public App()
@@ -22,11 +22,21 @@ public partial class App : Application
     protected override void OnStartup(StartupEventArgs e)
     {
         base.OnStartup(e);
+        new Thread(() => { PcInformation.GetAllPcInformation(); }).Start();//Cache PC info
         SentrySdk.Init(o =>
         {
             o.Dsn = Conf.Instance.SentryURL;
-            o.Debug = true;
+            o.Debug = false;
+            o.AutoSessionTracking = true;
+            o.IsGlobalModeEnabled = true;
             o.TracesSampleRate = 1.0;
+            o.CaptureFailedRequests = true;
+            o.Release = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            o.Environment = "Production";
+            o.AttachStacktrace = true;
+            o.MaxBreadcrumbs = 100;
+            o.MaxCacheItems = 100;
+            o.MaxQueueItems = 100;
         });
         SentrySdk.StartSession();
     }
@@ -45,11 +55,11 @@ public partial class App : Application
         SentrySdk.CaptureException(e.ExceptionObject as Exception, scope =>
         {
             scope.SetTag("Environment", "Production");
+            scope.SetExtra("PC Info", PcInformation.GetAllPcInformation());
             scope.SetExtra("User ID", Config.Session.User.Username);
             scope.SetExtra("Token", Config.Session.Token);
             scope.SetExtra("ProjectID", Conf.Instance.ProjectId);
-            var maxTab = Conf.Instance.ProjectTypeMaxTab[Config.Session.User.Additional.Additional];
-            scope.SetExtra("maxTab", maxTab);
+            scope.SetExtra("AccountConfigId", Config._instance?.AccountConfigId);
         });
     }
 
@@ -60,11 +70,11 @@ public partial class App : Application
         SentrySdk.CaptureException(e.Exception, scope =>
         {
             scope.SetTag("Environment", "Production");
+            scope.SetExtra("PC Info", PcInformation.GetAllPcInformation());
             scope.SetExtra("User ID", Config.Session.User.Username);
             scope.SetExtra("Token", Config.Session.Token);
             scope.SetExtra("ProjectID", Conf.Instance.ProjectId);
-            var maxTab = Conf.Instance.ProjectTypeMaxTab[Config.Session.User.Additional.Additional];
-            scope.SetExtra("maxTab", maxTab);
+            scope.SetExtra("AccountConfigId", Config._instance?.AccountConfigId);
         });
         e.Handled = true; // Prevent application from crashing
     }
@@ -75,11 +85,11 @@ public partial class App : Application
         SentrySdk.CaptureException(e.Exception, scope =>
         {
             scope.SetTag("Environment", "Production");
+            scope.SetExtra("PC Info", PcInformation.GetAllPcInformation());
             scope.SetExtra("User ID", Config.Session.User.Username);
             scope.SetExtra("Token", Config.Session.Token);
             scope.SetExtra("ProjectID", Conf.Instance.ProjectId);
-            var maxTab = Conf.Instance.ProjectTypeMaxTab[Config.Session.User.Additional.Additional];
-            scope.SetExtra("maxTab", maxTab);
+            scope.SetExtra("AccountConfigId", Config._instance?.AccountConfigId);
         });
         e.SetObserved(); // Prevent application from crashing
     }

@@ -1,0 +1,22 @@
+﻿<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Launch" type="DotNetProject" factoryName=".NET Project" activateToolWindowBeforeRun="false">
+    <option name="EXE_PATH" value="$PROJECT_DIR$/Launcher/bin/Release/net462/Launcher.exe" />
+    <option name="PROGRAM_PARAMETERS" value="" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/Launcher/bin/Release/net462" />
+    <option name="PASS_PARENT_ENVS" value="1" />
+    <option name="USE_EXTERNAL_CONSOLE" value="0" />
+    <option name="USE_MONO" value="0" />
+    <option name="RUNTIME_ARGUMENTS" value="" />
+    <option name="RUNTIME_TYPE" value="netfw" />
+    <option name="PROJECT_PATH" value="$PROJECT_DIR$/Launcher/Launcher.csproj" />
+    <option name="PROJECT_EXE_PATH_TRACKING" value="1" />
+    <option name="PROJECT_ARGUMENTS_TRACKING" value="1" />
+    <option name="PROJECT_WORKING_DIRECTORY_TRACKING" value="1" />
+    <option name="PROJECT_KIND" value="DotNetCore" />
+    <option name="PROJECT_TFM" value=".NETFramework,Version=v4.6.2" />
+    <method v="2">
+      <option name="CleanSolution" enabled="true" />
+      <option name="Build" projectName="Selected project" />
+    </method>
+  </configuration>
+</component>
