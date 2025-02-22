@@ -185,7 +185,12 @@ public sealed partial class AutoMenu : INotifyPropertyChanged
     {
         var device = (sender as Button)?.DataContext as Device;
         if (device.TestThread != null) device.TestThread.Abort();
-        device.TestThread = new Thread(() => { Console.WriteLine(new AutoController(device).Test()); });
+        device.TestThread = new Thread(() =>
+        {
+#if DEBUG
+            Console.WriteLine(new AutoController(device).Test());
+#endif
+        });
         device.TestThread.Start();
         // device.Home();
     }
