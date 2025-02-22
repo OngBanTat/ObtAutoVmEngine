@@ -22,7 +22,8 @@ public partial class App : Application
     protected override void OnStartup(StartupEventArgs e)
     {
         base.OnStartup(e);
-        new Thread(() => { PcInformation.GetAllPcInformation(); }).Start();//Cache PC info
+#if RELEASE
+        new Thread(() => { PcInformation.GetAllPcInformation(); }).Start(); //Cache PC info
         SentrySdk.Init(o =>
         {
             o.Dsn = Conf.Instance.SentryURL;
@@ -39,6 +40,7 @@ public partial class App : Application
             o.MaxQueueItems = 100;
         });
         SentrySdk.StartSession();
+#endif
     }
 
     protected override void OnExit(ExitEventArgs e)
@@ -51,6 +53,7 @@ public partial class App : Application
 
     private void OnUnhandledException(object sender, UnhandledExceptionEventArgs e)
     {
+#if RELEASE
         SentrySdk.AddBreadcrumb("Unhandled exception occurred");
         SentrySdk.CaptureException(e.ExceptionObject as Exception, scope =>
         {
@@ -61,11 +64,13 @@ public partial class App : Application
             scope.SetExtra("ProjectID", Conf.Instance.ProjectId);
             scope.SetExtra("AccountConfigId", Config._instance?.AccountConfigId);
         });
+#endif
     }
 
     private void OnDispatcherUnhandledException(object sender,
         DispatcherUnhandledExceptionEventArgs e)
     {
+#if RELEASE
         SentrySdk.AddBreadcrumb("A dispatcher unhandled exception occurred");
         SentrySdk.CaptureException(e.Exception, scope =>
         {
@@ -77,10 +82,12 @@ public partial class App : Application
             scope.SetExtra("AccountConfigId", Config._instance?.AccountConfigId);
         });
         e.Handled = true; // Prevent application from crashing
+#endif
     }
 
     private void OnUnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
     {
+#if RELEASE
         SentrySdk.AddBreadcrumb("An unobserved task exception occurred");
         SentrySdk.CaptureException(e.Exception, scope =>
         {
@@ -92,6 +99,7 @@ public partial class App : Application
             scope.SetExtra("AccountConfigId", Config._instance?.AccountConfigId);
         });
         e.SetObserved(); // Prevent application from crashing
+#endif
     }
 
     private void Application_Startup(object sender, StartupEventArgs e)
