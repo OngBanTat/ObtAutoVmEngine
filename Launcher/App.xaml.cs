@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Threading;
 using ObtSDK;
@@ -45,9 +45,10 @@ public partial class App : Application
 
     protected override void OnExit(ExitEventArgs e)
     {
+#if RELEASE
         SentrySdk.EndSession();
         SentrySdk.Close();
-
+#endif
         base.OnExit(e);
     }
 
