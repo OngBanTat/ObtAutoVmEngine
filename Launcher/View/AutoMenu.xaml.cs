@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Threading;
 using Launcher.Controller;
 using Launcher.Model;
+using ObtSDK;
 using ObtSDK.AutoAndroidVm;
 using ObtSDK.Utils;
 
@@ -187,9 +188,8 @@ public sealed partial class AutoMenu : INotifyPropertyChanged
         if (device.TestThread != null) device.TestThread.Abort();
         device.TestThread = new Thread(() =>
         {
-#if DEBUG
-            Console.WriteLine(new AutoController(device).Test());
-#endif
+            if (Config.Debug)
+                Console.WriteLine(new AutoController(device).Test());
         });
         device.TestThread.Start();
         // device.Home();

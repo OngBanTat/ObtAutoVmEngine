@@ -14,6 +14,9 @@ public partial class App : Application
     public App()
     {
         // Register global exception handlers
+#if RELEASE
+        Config.Debug = false;
+#endif
         AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
         DispatcherUnhandledException += OnDispatcherUnhandledException;
         TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;
@@ -22,85 +25,88 @@ public partial class App : Application
     protected override void OnStartup(StartupEventArgs e)
     {
         base.OnStartup(e);
-#if RELEASE
-        new Thread(() => { PcInformation.GetAllPcInformation(); }).Start(); //Cache PC info
-        SentrySdk.Init(o =>
+        if (!Config.Debug)
         {
-            o.Dsn = Conf.Instance.SentryURL;
-            o.Debug = false;
-            o.AutoSessionTracking = true;
-            o.IsGlobalModeEnabled = true;
-            o.TracesSampleRate = 1.0;
-            o.CaptureFailedRequests = true;
-            o.Release = Assembly.GetExecutingAssembly().GetName().Version.ToString();
-            o.Environment = "Production";
-            o.AttachStacktrace = true;
-            o.MaxBreadcrumbs = 100;
-            o.MaxCacheItems = 100;
-            o.MaxQueueItems = 100;
-        });
-        SentrySdk.StartSession();
-#endif
+            new Thread(() => { PcInformation.GetAllPcInformation(); }).Start(); //Cache PC info
+            SentrySdk.Init(o =>
+            {
+                o.Dsn = Conf.Instance.SentryURL;
+                o.Debug = false;
+                o.AutoSessionTracking = true;
+                o.IsGlobalModeEnabled = true;
+                o.TracesSampleRate = 1.0;
+                o.CaptureFailedRequests = true;
+                o.Release = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+                o.Environment = "Production";
+                o.AttachStacktrace = true;
+                o.MaxBreadcrumbs = 100;
+                o.MaxCacheItems = 100;
+                o.MaxQueueItems = 100;
+            });
+            SentrySdk.StartSession();
+        }
     }
 
     protected override void OnExit(ExitEventArgs e)
     {
-#if RELEASE
         SentrySdk.EndSession();
         SentrySdk.Close();
-#endif
+
         base.OnExit(e);
     }
 
     private void OnUnhandledException(object sender, UnhandledExceptionEventArgs e)
     {
-#if RELEASE
-        SentrySdk.AddBreadcrumb("Unhandled exception occurred");
-        SentrySdk.CaptureException(e.ExceptionObject as Exception, scope =>
+        if (!Config.Debug)
         {
-            scope.SetTag("Environment", "Production");
-            scope.SetExtra("PC Info", PcInformation.GetAllPcInformation());
-            scope.SetExtra("User ID", Config.Session.User.Username);
-            scope.SetExtra("Token", Config.Session.Token);
-            scope.SetExtra("ProjectID", Conf.Instance.ProjectId);
-            scope.SetExtra("AccountConfigId", Config._instance?.AccountConfigId);
-        });
-#endif
+            SentrySdk.AddBreadcrumb("Unhandled exception occurred");
+            SentrySdk.CaptureException(e.ExceptionObject as Exception, scope =>
+            {
+                scope.SetTag("Environment", "Production");
+                scope.SetExtra("PC Info", PcInformation.GetAllPcInformation());
+                scope.SetExtra("User ID", Config.Session.User.Username);
+                scope.SetExtra("Token", Config.Session.Token);
+                scope.SetExtra("ProjectID", Conf.Instance.ProjectId);
+                scope.SetExtra("AccountConfigId", Config._instance?.AccountConfigId);
+            });
+        }
     }
 
     private void OnDispatcherUnhandledException(object sender,
         DispatcherUnhandledExceptionEventArgs e)
     {
-#if RELEASE
-        SentrySdk.AddBreadcrumb("A dispatcher unhandled exception occurred");
-        SentrySdk.CaptureException(e.Exception, scope =>
+        if (!Config.Debug)
         {
-            scope.SetTag("Environment", "Production");
-            scope.SetExtra("PC Info", PcInformation.GetAllPcInformation());
-            scope.SetExtra("User ID", Config.Session.User.Username);
-            scope.SetExtra("Token", Config.Session.Token);
-            scope.SetExtra("ProjectID", Conf.Instance.ProjectId);
-            scope.SetExtra("AccountConfigId", Config._instance?.AccountConfigId);
-        });
-        e.Handled = true; // Prevent application from crashing
-#endif
+            SentrySdk.AddBreadcrumb("A dispatcher unhandled exception occurred");
+            SentrySdk.CaptureException(e.Exception, scope =>
+            {
+                scope.SetTag("Environment", "Production");
+                scope.SetExtra("PC Info", PcInformation.GetAllPcInformation());
+                scope.SetExtra("User ID", Config.Session.User.Username);
+                scope.SetExtra("Token", Config.Session.Token);
+                scope.SetExtra("ProjectID", Conf.Instance.ProjectId);
+                scope.SetExtra("AccountConfigId", Config._instance?.AccountConfigId);
+            });
+            e.Handled = true; // Prevent application from crashing
+        }
     }
 
     private void OnUnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
     {
-#if RELEASE
-        SentrySdk.AddBreadcrumb("An unobserved task exception occurred");
-        SentrySdk.CaptureException(e.Exception, scope =>
+        if (!Config.Debug)
         {
-            scope.SetTag("Environment", "Production");
-            scope.SetExtra("PC Info", PcInformation.GetAllPcInformation());
-            scope.SetExtra("User ID", Config.Session.User.Username);
-            scope.SetExtra("Token", Config.Session.Token);
-            scope.SetExtra("ProjectID", Conf.Instance.ProjectId);
-            scope.SetExtra("AccountConfigId", Config._instance?.AccountConfigId);
-        });
-        e.SetObserved(); // Prevent application from crashing
-#endif
+            SentrySdk.AddBreadcrumb("An unobserved task exception occurred");
+            SentrySdk.CaptureException(e.Exception, scope =>
+            {
+                scope.SetTag("Environment", "Production");
+                scope.SetExtra("PC Info", PcInformation.GetAllPcInformation());
+                scope.SetExtra("User ID", Config.Session.User.Username);
+                scope.SetExtra("Token", Config.Session.Token);
+                scope.SetExtra("ProjectID", Conf.Instance.ProjectId);
+                scope.SetExtra("AccountConfigId", Config._instance?.AccountConfigId);
+            });
+            e.SetObserved(); // Prevent application from crashing
+        }
     }
 
     private void Application_Startup(object sender, StartupEventArgs e)

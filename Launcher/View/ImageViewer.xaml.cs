@@ -11,13 +11,13 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
-using KAutoHelper;
 using Launcher.Model;
 using ObtSDK.AutoAndroidVm;
 using ObtSDK.ObtApis.Services;
 using ObtSDK.Utils;
 using Brushes = System.Windows.Media.Brushes;
 using Color = System.Drawing.Color;
+using Image = System.Drawing.Image;
 using ImageConverter = ObtSDK.ImageServices.ImageConverter;
 using Point = System.Windows.Point;
 using Rectangle = System.Windows.Shapes.Rectangle;
@@ -128,11 +128,12 @@ public partial class ImageViewer : INotifyPropertyChanged
             if (IsBinaryImg)
             {
                 var ok = int.TryParse(BinThreshold, out var threshold);
-                if (!ok||threshold<0) threshold = 128;
+                if (!ok || threshold < 0) threshold = 128;
                 img = ImageConverter.ImgToBinary(img, threshold);
             }
+
             var sizePlus = device.GetSizePlus();
-            img = CaptureHelper.CropImage(img, new System.Drawing.Rectangle(0, (int)Math.Round(sizePlus.Height),
+            img = CropImage(img, new System.Drawing.Rectangle(0, (int)Math.Round(sizePlus.Height),
                 img.Width - (int)Math.Round(sizePlus.Width), img.Height));
             using var memory = new MemoryStream();
             img.Save(memory, ImageFormat.Png);
@@ -188,6 +189,15 @@ public partial class ImageViewer : INotifyPropertyChanged
     private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+
+    private static Bitmap CropImage(Bitmap img, System.Drawing.Rectangle cropRect)
+    {
+        var bitmap2 = new Bitmap((int)cropRect.Width, (int)cropRect.Height);
+        using var graphics = Graphics.FromImage((Image)bitmap2);
+        graphics.DrawImage((Image)img, new System.Drawing.Rectangle(0, 0, bitmap2.Width, bitmap2.Height),
+            cropRect, GraphicsUnit.Pixel);
+        return bitmap2;
     }
 
     private bool SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
@@ -315,7 +325,7 @@ public partial class ImageViewer : INotifyPropertyChanged
             sy = a.PixelHeight / a.Height;
         }
 
-        var img2 = CaptureHelper.CropImage(_img, new System.Drawing.Rectangle(
+        var img2 = CropImage(_img, new System.Drawing.Rectangle(
             (int)Math.Round(_x * sx), (int)Math.Round((_y - 20) * sy),
             (int)Math.Round(_w * sx), (int)Math.Round(_h * sy)));
         // Common.CopyBitmapToClipboard(img2);
@@ -465,7 +475,7 @@ public partial class ImageViewer : INotifyPropertyChanged
             sy = a.PixelHeight / a.Height;
         }
 
-        var img2 = CaptureHelper.CropImage(_img, new System.Drawing.Rectangle(
+        var img2 = CropImage(_img, new System.Drawing.Rectangle(
             (int)Math.Round(_x * sx), (int)Math.Round((_y - 20) * sy),
             (int)Math.Round(_w * sx), (int)Math.Round(_h * sy)));
         // Common.CopyBitmapToClipboard(img2);
