@@ -23,7 +23,7 @@ if (Test-Path $exeFile)
     Write-Host "DEBUG: Product version retrieved: $version"
 
     # Create the ZIP file path
-    $zipFileName = Join-Path -Path $buildFolder -ChildPath ((Get-Item $exeFile).VersionInfo.ProductName + '_V' + $version + '.zip')
+    $zipFileName = Join-Path -Path $buildFolder -ChildPath ('../'+(Get-Item $exeFile).VersionInfo.ProductName + '_V' + $version + '.zip')
     Write-Host "DEBUG: Target ZIP file path is '$zipFileName'"
 
     # Compress the build folder contents into a ZIP file
