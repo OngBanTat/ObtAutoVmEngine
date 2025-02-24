@@ -17,6 +17,7 @@ public partial class App : Application
 #if RELEASE
         Config.Debug = false;
 #endif
+        Environment.SetEnvironmentVariable("ADB_LOCAL_TRANSPORT_MAX_PORT ", "65000", EnvironmentVariableTarget.User);
         AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
         DispatcherUnhandledException += OnDispatcherUnhandledException;
         TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;
