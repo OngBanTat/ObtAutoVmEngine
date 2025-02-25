@@ -45,33 +45,13 @@
         <Content Include="assets\**">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
-        <Content Update="..\..\..\.nuget\packages\obtsdk\1.4.0\contentFiles\any\net462\cvextern.dll">
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </Content>
-        <Content Update="..\..\..\.nuget\packages\obtsdk\1.4.0\contentFiles\any\net462\msvcp140.dll">
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </Content>
-        <Content Update="..\..\..\.nuget\packages\obtsdk\1.4.0\contentFiles\any\net462\Emgu.CV.World.dll">
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </Content>
-        <Content Update="..\..\..\.nuget\packages\obtsdk\1.4.0\contentFiles\any\net462\concrt140.dll">
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </Content>
-        <Content Update="..\..\..\.nuget\packages\obtsdk\1.4.0\contentFiles\any\net462\opencv_ffmpeg343.dll">
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </Content>
-        <Content Update="..\..\..\.nuget\packages\obtsdk\1.4.0\contentFiles\any\net462\vcruntime140.dll">
-          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </Content>
-        <Content Remove="..\..\..\.nuget\packages\obtsdk\1.4.0\contentFiles\any\net462\KAutoHelper.dll" />
-
 
     </ItemGroup>
 
 
     <ItemGroup>
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
-        <PackageReference Include="ObtSDK" Version="1.4.0" />
+        <PackageReference Include="ObtSDK" Version="1.5.0" />
         <PackageReference Include="PaddleOCRSharp" Version="4.4.0.2" />
         <PackageReference Include="Sentry" Version="5.1.1"/>
     </ItemGroup>
