@@ -17,9 +17,26 @@ public partial class App : Application
 #if RELEASE
         Config.Debug = false;
 #endif
+        // Check if the ADB_LOCAL_TRANSPORT_MAX_PORT environment variable is not set to "65000"
         if (Environment.GetEnvironmentVariable("ADB_LOCAL_TRANSPORT_MAX_PORT", EnvironmentVariableTarget.User) !=
             "65000")
         {
+            // Terminate any running adb.exe processes
+            foreach (var process in System.Diagnostics.Process.GetProcessesByName("adb"))
+            {
+                try
+                {
+                    process.Kill(); // Attempt to kill the process
+                    process.WaitForExit(); // Wait for the process to exit
+                }
+                catch (Exception ex)
+                {
+                    // Log any exception that occurs while trying to kill the process
+                    Console.WriteLine($"Failed to terminate adb.exe process: {ex.Message}");
+                }
+            }
+
+            // Set the ADB_LOCAL_TRANSPORT_MAX_PORT environment variable to "65000"
             Environment.SetEnvironmentVariable("ADB_LOCAL_TRANSPORT_MAX_PORT", "65000", EnvironmentVariableTarget.User);
         }
 
