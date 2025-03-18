@@ -1,3 +1,4 @@
+using System.IO;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Threading;
@@ -17,6 +18,8 @@ public partial class App : Application
 #if RELEASE
         Config.Debug = false;
 #endif
+        AppDomain.CurrentDomain.AssemblyResolve += OnResolveAssembly;
+
         // Check if the ADB_LOCAL_TRANSPORT_MAX_PORT environment variable is not set to "65000"
         if (Environment.GetEnvironmentVariable("ADB_LOCAL_TRANSPORT_MAX_PORT", EnvironmentVariableTarget.User) !=
             "65000")
@@ -45,9 +48,30 @@ public partial class App : Application
         TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;
     }
 
+    private Assembly OnResolveAssembly(object sender, ResolveEventArgs args)
+    {
+        // Path to the bin folder
+        string binPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,"bin");
+
+        // Get the assembly name being requested
+        var assemblyName = new AssemblyName(args.Name).Name;
+
+        // Find the DLL that matches the assembly name
+        var dllPath = Path.Combine(binPath, $"{assemblyName}.dll");
+
+        // If the DLL exists, load it
+        if (File.Exists(dllPath))
+        {
+            return Assembly.LoadFrom(dllPath);
+        }
+
+        return null;
+    }
+
     protected override void OnStartup(StartupEventArgs e)
     {
         base.OnStartup(e);
+
         if (!Config.Debug)
         {
             new Thread(() => { PcInformation.GetAllPcInformation(); }).Start(); //Cache PC info
@@ -70,12 +94,15 @@ public partial class App : Application
         }
     }
 
+
+
     protected override void OnExit(ExitEventArgs e)
     {
         SentrySdk.EndSession();
         SentrySdk.Close();
 
         base.OnExit(e);
+        AppDomain.CurrentDomain.AssemblyResolve -= OnResolveAssembly;
     }
 
     private void OnUnhandledException(object sender, UnhandledExceptionEventArgs e)

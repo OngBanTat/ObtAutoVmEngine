@@ -7,6 +7,8 @@ public class AutoController(Device d)
     public async Task<bool> Run()
     {
         d.DoneAuto();
+        var screen = d.AdbDeviceClient.DumpScreen();
+        screen.Save("screen.xml");
         return true;
     }
 

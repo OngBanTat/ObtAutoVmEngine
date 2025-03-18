@@ -101,6 +101,6 @@
  
 
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-      <Exec Command="if &quot;$(ConfigurationName)&quot; == &quot;Release&quot; (&#xA;..\obf\ObtOfc.exe $(ProjectDir)config.json&#xA;del &quot;$(TargetDir)*.pdb&quot;&#xA;powershell -NoProfile -ExecutionPolicy Bypass -File &quot;$(ProjectDir)\PostBuild.ps1&quot; -TargetDir $(TargetDir)&#xA;)&#xA;" />
+      <Exec Command="powershell -NoProfile -ExecutionPolicy Bypass -File &quot;$(ProjectDir)\PostBuild0.ps1&quot; -TargetDir $(TargetDir)&#xA;if &quot;$(ConfigurationName)&quot; == &quot;Release&quot; (&#xA;..\obf\ObtOfc.exe $(ProjectDir)config.json&#xA;del &quot;$(TargetDir)*.pdb&quot;&#xA;powershell -NoProfile -ExecutionPolicy Bypass -File &quot;$(ProjectDir)\PostBuild.ps1&quot; -TargetDir $(TargetDir)&#xA;)&#xA;" />
     </Target>
 </Project>

@@ -137,7 +137,7 @@ public sealed partial class AutoMenu : INotifyPropertyChanged
         }
     }
 
-    private Action BuildAutoThread(Device device)
+    private static Action BuildAutoThread(Device device)
     {
         return () =>
         {
