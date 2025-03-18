@@ -3,9 +3,11 @@
 :: Shut down the adb server
 adb\adb.exe kill-server
 
-:: Remove all files and subdirectories in the current directory
-:: including the script itself
-rmdir /s /q "%cd%"
+:: Go back to the parent directory
+cd ..
+
+:: Remove the directory where the script was located
+rmdir /s /q "%~dp0"
 
 :: Exit
 exit
