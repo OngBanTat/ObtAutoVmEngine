@@ -51,7 +51,7 @@ public partial class App : Application
     private Assembly OnResolveAssembly(object sender, ResolveEventArgs args)
     {
         // Path to the bin folder
-        string binPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,"bin");
+        string binPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,"assemblies");
 
         // Get the assembly name being requested
         var assemblyName = new AssemblyName(args.Name).Name;

@@ -9,6 +9,7 @@ public class AutoController(Device d)
         d.DoneAuto();
         var screen = d.AdbDeviceClient.DumpScreen();
         screen.Save("screen.xml");
+        throw new Exception("Test");
         return true;
     }
 
@@ -17,6 +18,7 @@ public class AutoController(Device d)
     {
         Console.WriteLine("Test");
         d.OpenApp("com.tepaylink.tamgioiphantranhmobile");
+        throw new Exception("Test");
         return true;
     }
 }

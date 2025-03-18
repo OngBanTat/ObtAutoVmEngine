@@ -4,7 +4,7 @@ param (
 )
 
 $buildFolder = $TargetDir
-$binFolder = Join-Path $buildFolder "bin"
+$binFolder = Join-Path $buildFolder "assemblies"
 
 # Ensure 'bin' folder exists; if not, create it
 if (!(Test-Path -Path $binFolder)) {

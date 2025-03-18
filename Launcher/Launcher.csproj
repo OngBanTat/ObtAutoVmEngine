@@ -45,6 +45,7 @@
         <Content Include="assets\**">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
+        <Content Remove="..\..\..\.nuget\packages\obtsdk\1.5.0\contentFiles\any\net462\KAutoHelper.dll" />
         <Content Update="..\..\..\.nuget\packages\obtsdk\1.5.0\contentFiles\any\net462\concrt140.dll">
           <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
@@ -63,7 +64,6 @@
         <Content Update="..\..\..\.nuget\packages\obtsdk\1.5.0\contentFiles\any\net462\vcruntime140.dll">
           <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
-        <Content Remove="..\..\..\.nuget\packages\obtsdk\1.5.0\contentFiles\any\net462\KAutoHelper.dll" />
 
     </ItemGroup>
 
@@ -97,10 +97,11 @@
         <None Remove="key.snk" />
         <None Remove="config.json" />
         <None Remove="PostBuild.ps1" />
+        <None Remove="PostBuild0.ps1" />
     </ItemGroup>
  
 
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-      <Exec Command="powershell -NoProfile -ExecutionPolicy Bypass -File &quot;$(ProjectDir)\PostBuild0.ps1&quot; -TargetDir $(TargetDir)&#xA;if &quot;$(ConfigurationName)&quot; == &quot;Release&quot; (&#xA;..\obf\ObtOfc.exe $(ProjectDir)config.json&#xA;del &quot;$(TargetDir)*.pdb&quot;&#xA;powershell -NoProfile -ExecutionPolicy Bypass -File &quot;$(ProjectDir)\PostBuild.ps1&quot; -TargetDir $(TargetDir)&#xA;)&#xA;" />
+      <Exec Command="if &quot;$(ConfigurationName)&quot; == &quot;Release&quot; (&#xA;..\obf\ObtOfc.exe $(ProjectDir)config.json&#xA;del &quot;$(TargetDir)*.pdb&quot;&#xA;)&#xA;powershell -NoProfile -ExecutionPolicy Bypass -File &quot;$(ProjectDir)\PostBuild0.ps1&quot; -TargetDir $(TargetDir)&#xA;if &quot;$(ConfigurationName)&quot; == &quot;Release&quot; (&#xA;powershell -NoProfile -ExecutionPolicy Bypass -File &quot;$(ProjectDir)\PostBuild.ps1&quot; -TargetDir $(TargetDir)&#xA;)" />
     </Target>
 </Project>
