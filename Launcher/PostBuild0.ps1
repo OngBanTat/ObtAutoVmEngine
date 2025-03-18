@@ -13,7 +13,7 @@ if (!(Test-Path -Path $binFolder)) {
 
 # Move all files in the top-level of the build folder, except ObtSDK.dll and Launcher.exe, to the 'bin' folder
 Get-ChildItem -Path $buildFolder -File | ForEach-Object {
-    if ($_.Name -ne "ObtSDK.dll" -and $_.Name -ne "Launcher.exe") {
+    if ($_.Name -ne "ObtSDK.dll" -and $_.Name -ne "Launcher.exe" -and $_.Name -ne "uninstall.bat") {
         Move-Item -Path $_.FullName -Destination $binFolder -Force
     }
 }

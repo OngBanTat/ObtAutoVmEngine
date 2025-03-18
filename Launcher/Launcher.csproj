@@ -98,6 +98,9 @@
         <None Remove="config.json" />
         <None Remove="PostBuild.ps1" />
         <None Remove="PostBuild0.ps1" />
+        <None Update="uninstall.bat">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
     </ItemGroup>
  
 
