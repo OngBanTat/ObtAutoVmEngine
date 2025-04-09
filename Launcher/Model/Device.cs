@@ -11,6 +11,18 @@ public class Device : BaseDeviceInfo
 {
     private readonly IObtApiServices _obtApiServices = ObtApiServicesImp.GetInstance();
     protected override Size FixedWindowSize => Conf.Instance.VmScreenSize;
+    private int _index = 0;
+
+    public int Index
+    {
+        get => _index;
+        set
+        {
+            if (value == _index) return;
+            _index = value;
+            OnPropertyChanged();
+        }
+    }
 
     public string Assets(string path)
     {
