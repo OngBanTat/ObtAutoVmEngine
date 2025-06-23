@@ -34,10 +34,7 @@
                                 </GridViewColumn.Header>
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <StackPanel Orientation="Horizontal">
-                                            <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" />
-                                            <TextBlock Text="{Binding Index}" Margin="10 0 0 0"/>
-                                        </StackPanel>
+                                        <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" />
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
 
@@ -49,14 +46,14 @@
                             <GridViewColumn Header="STAGE" DisplayMemberBinding="{Binding Stage}" />
                             <GridViewColumn Header="STATUS" Width="250" DisplayMemberBinding="{Binding Status}" />
                             <GridViewColumn Header="THREAD STAGE" Width="1" DisplayMemberBinding="{Binding TStage}" />
-                            <GridViewColumn Header="ACTION" Width="250">
+                            <GridViewColumn Header="ACTION" Width="130">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal">
                                             <Button Content="Start" Click="ButtonStart_Click" />
                                             <Button Content="Stop" Margin="15,0,0,0" Click="ButtonStop_Click" />
-                                            <Button Content="Pause" Margin="15,0,0,0" Click="ButtonPause_Click" />
-                                            <Button Content="Resume" Margin="15,0,0,0" Click="ButtonResume_Click" />
+                                            <!-- <Button Content="Pause" Margin="15,0,0,0" Click="ButtonPause_Click" /> -->
+                                            <!-- <Button Content="Resume" Margin="15,0,0,0" Click="ButtonResume_Click" /> -->
                                             <Button Content="View" Margin="15,0,0,0"
                                                     Click="ButtonScreenshot_Click" />
                                             <Button Content="TEST" Margin="15,0,0,0"

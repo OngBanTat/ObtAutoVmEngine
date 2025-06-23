@@ -2,18 +2,19 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
 using Launcher.Controller;
 using Launcher.Model;
-using ObtSDK;
 using ObtSDK.AutoAndroidVm;
 using ObtSDK.Utils;
 
 namespace Launcher.View;
 
+[Obfuscation(Exclude = false, Feature = "-rename")]
 public sealed partial class AutoMenu : INotifyPropertyChanged
 {
     private readonly DispatcherTimer _timerCheckDevices = new();
@@ -88,19 +89,16 @@ public sealed partial class AutoMenu : INotifyPropertyChanged
     {
         var maxTab = Conf.Instance.ProjectTypeMaxTab[Conf.Instance.AccountConfigId];
         _ = VmHelper.LoadDevices(ListDevices, maxTab, Conf.Instance.SupportDeviceType);
-        var count = 0;
-        foreach (var device in ListDevices)
-        {
-            device.Index = ++count;
-        }
+        Console.WriteLine($"Loaded {ListDevices.Count} devices.");
     }
 
 
     private void Window_Loaded(object sender, RoutedEventArgs e)
     {
         Common.SetTimeout(LoadDevices, 500);
-
-        if (Conf.Instance.SupportDeviceType != BaseDeviceInfo.DeviceType.Adb)
+        if (Conf.Instance.SupportDeviceType != BaseDeviceInfo.DeviceType.Adb &&
+            Conf.Instance.SupportDeviceType != BaseDeviceInfo.DeviceType.LdAdb &&
+            Conf.Instance.SupportDeviceType != BaseDeviceInfo.DeviceType.MemuAdb)
         {
             _timerCheckDevices.Interval = TimeSpan.FromSeconds(10.0);
             _timerCheckDevices.Tick += TimerCheckDevices_Tick;
@@ -129,7 +127,7 @@ public sealed partial class AutoMenu : INotifyPropertyChanged
         foreach (var item in ListDevices)
         {
             if (!item.IsSelected) continue;
-            item.StopAuto();
+            _ = item.StopAutoAsync();
         }
     }
 
@@ -138,45 +136,45 @@ public sealed partial class AutoMenu : INotifyPropertyChanged
         foreach (var item in ListDevices)
         {
             if (!item.IsSelected) continue;
-            _ = item.StartAuto(BuildAutoThread(item));
+            _ = item.StartAutoAsync(BuildAutoThread(item));
         }
     }
 
-    private static Action BuildAutoThread(Device device)
+    private Func<Task> BuildAutoThread(Device item)
     {
-        return () =>
+        return async () =>
         {
-            var ctl = new AutoController(device);
-            var status = ctl.Run().GetAwaiter().GetResult();
-            Console.WriteLine(status);
+            var autoController = new AutoController(item);
+            await autoController.Run();
         };
     }
+
 
     private void ButtonStart_Click(object sender, RoutedEventArgs e)
     {
         var clickedButton = (Button)sender;
         // Use the button's DataContext to find out which item it was in the ListView
         var item = clickedButton.DataContext as Device;
-        item.StartAuto(BuildAutoThread(item));
+        _ = item?.StartAutoAsync(BuildAutoThread(item));
     }
 
     private void ButtonStop_Click(object sender, RoutedEventArgs e)
     {
         var item = (sender as Button)?.DataContext as Device;
-        item.StopAuto();
+        _ = item?.StopAutoAsync();
     }
 
-    private void ButtonPause_Click(object sender, RoutedEventArgs e)
-    {
-        var item = (sender as Button)?.DataContext as Device;
-        item?.PauseAuto();
-    }
-
-    private void ButtonResume_Click(object sender, RoutedEventArgs e)
-    {
-        var item = (sender as Button)?.DataContext as Device;
-        item?.ResumeAuto();
-    }
+    // private void ButtonPause_Click(object sender, RoutedEventArgs e)
+    // {
+    //     var item = (sender as Button)?.DataContext as Device;
+    //     item?.PauseAuto();
+    // }
+    //
+    // private void ButtonResume_Click(object sender, RoutedEventArgs e)
+    // {
+    //     var item = (sender as Button)?.DataContext as Device;
+    //     item?.ResumeAuto();
+    // }
 
     private void ButtonScreenshot_Click(object sender, RoutedEventArgs e)
     {
@@ -191,19 +189,16 @@ public sealed partial class AutoMenu : INotifyPropertyChanged
     {
         var device = (sender as Button)?.DataContext as Device;
         if (device.TestThread != null) device.TestThread.Abort();
-        device.TestThread = new Thread(() =>
-        {
-            if (Config.Debug)
-                Console.WriteLine(new AutoController(device).Test());
-        });
+        device.TestThread = new Thread(() => { Console.WriteLine(new AutoController(device).Test()); });
         device.TestThread.Start();
-        // device.Home();
     }
 
 
     private void Button_MirrorAll_Click(object sender, RoutedEventArgs e)
     {
-        if (Conf.Instance.SupportDeviceType != BaseDeviceInfo.DeviceType.Adb)
+        if (Conf.Instance.SupportDeviceType != BaseDeviceInfo.DeviceType.Adb &&
+            Conf.Instance.SupportDeviceType != BaseDeviceInfo.DeviceType.LdAdb &&
+            Conf.Instance.SupportDeviceType != BaseDeviceInfo.DeviceType.MemuAdb)
             try
             {
                 const string windowName = "Multi monitor - Created by K9 from Kteam";
@@ -226,6 +221,7 @@ public sealed partial class AutoMenu : INotifyPropertyChanged
             {
                 Console.WriteLine($"An error occurred: {ex.Message}");
             }
+
         else
             LoadDevices();
     }
