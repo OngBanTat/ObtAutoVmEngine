@@ -28,6 +28,9 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <Reference Include="Emgu.CV.World">
+          <HintPath>..\Lib\Emgu.CV.World.dll</HintPath>
+        </Reference>
         <Reference Include="KAutoHelper">
           <HintPath>..\Lib\KAutoHelper.dll</HintPath>
         </Reference>
@@ -72,6 +75,21 @@
         <Content Update="C:\Users\*\.nuget\packages\obtsdk\*\contentFiles\any\net462\vcruntime140.dll">
           <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
           <Link>vcruntime140.dll</Link>
+        </Content>
+        <Content Update="..\..\..\.nuget\packages\obtsdk\1.7.0\contentFiles\any\net462\cvextern.dll">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Update="..\..\..\.nuget\packages\obtsdk\1.7.0\contentFiles\any\net462\msvcp140.dll">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Update="..\..\..\.nuget\packages\obtsdk\1.7.0\contentFiles\any\net462\concrt140.dll">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Update="..\..\..\.nuget\packages\obtsdk\1.7.0\contentFiles\any\net462\opencv_ffmpeg343.dll">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Update="..\..\..\.nuget\packages\obtsdk\1.7.0\contentFiles\any\net462\vcruntime140.dll">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
     
       

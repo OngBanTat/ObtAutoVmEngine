@@ -17,8 +17,7 @@ public class AutoController(Device d)
     public dynamic Test()
     {
         Console.WriteLine("Test");
-        d.OpenApp("com.tepaylink.tamgioiphantranhmobile");
-        throw new Exception("Test");
+        d.OpenApp("com.wildlife.games.battle.royale.free.zooba");
         return true;
     }
 }
