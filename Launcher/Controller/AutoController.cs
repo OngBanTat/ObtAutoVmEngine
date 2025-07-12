@@ -6,10 +6,9 @@ public class AutoController(Device d)
 {
     public async Task<bool> Run()
     {
-        d.DoneAuto();
-        var screen = d.AdbDeviceClient.DumpScreen();
-        screen.Save("screen.xml");
-        throw new Exception("Test");
+        var ret =  d.FindAndClick(d.Assets("icongame.png"), 0.7);
+        await d.DelayAsync(10000);
+        Console.WriteLine(ret);
         return true;
     }
 
@@ -17,7 +16,7 @@ public class AutoController(Device d)
     public dynamic Test()
     {
         Console.WriteLine("Test");
-        d.OpenApp("com.wildlife.games.battle.royale.free.zooba");
+
         return true;
     }
 }

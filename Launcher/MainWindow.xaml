@@ -18,19 +18,18 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <Label Content="Username:" Grid.Row="0" Grid.Column="0" Margin="10" />
+        <Label Content="Tài khoản:" Grid.Row="0" Grid.Column="0" Margin="10" />
         <TextBox Text="{Binding Username, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Grid.Row="0"
                  Grid.Column="1" Margin="10" />
 
-        <Label Content="Password:" Grid.Row="1" Grid.Column="0" Margin="10" />
+        <Label Content="Mật khẩu:" Grid.Row="1" Grid.Column="0" Margin="10" />
         <TextBox Text="{Binding Path=Password, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Grid.Row="1"
                  Grid.Column="1" Margin="10" />
 
-        <Button Content="Login" Grid.Row="2" Margin="47,10,0,10"
-                Name="BtnLogin"
+        <Button Content="Đăng Nhập" Grid.Row="2" Margin="47,10,0,10"
+                Name="BtnLogin" Background="#20a8d8" Foreground="White"
                 HorizontalAlignment="Left" Click="LoginButton_Click"
                 RenderTransformOrigin="1.248,0.607" Grid.Column="1" />
-
 
         <TextBlock Grid.Row="3" Grid.ColumnSpan="2" Grid.Column="0" VerticalAlignment="Bottom" Margin="0,0,5,5"
                    HorizontalAlignment="Right">

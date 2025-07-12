@@ -11,7 +11,6 @@ using ObtSDK.Utils;
 
 namespace Launcher;
 
-[Obfuscation(Exclude = false, Feature = "-rename")]
 public sealed partial class MainWindow : INotifyPropertyChanged
 {
     private string? _password;
@@ -88,8 +87,8 @@ public sealed partial class MainWindow : INotifyPropertyChanged
         {
             Username = LocalStorage.GetItem("username") ?? "";
             Password = LocalStorage.GetItem("password") ?? "";
-            // if (Username != "" && Password != "")
-            //     LoginButton_Click(sender, e);
+            if (Config.Debug && Username != "" && Password != "")
+                LoginButton_Click(sender, e);
         }
         catch (Exception ex)
         {

@@ -89,6 +89,11 @@ public sealed partial class AutoMenu : INotifyPropertyChanged
         var maxTab = Conf.Instance.ProjectTypeMaxTab[Conf.Instance.AccountConfigId];
         _ = VmHelper.LoadDevices(ListDevices, maxTab, Conf.Instance.SupportDeviceType);
         Console.WriteLine($"Loaded {ListDevices.Count} devices.");
+        int count = 1;
+        foreach (var device in ListDevices)
+        {
+            device.VmIndex = count++;
+        }
     }
 
 
