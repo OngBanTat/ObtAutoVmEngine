@@ -14,7 +14,6 @@ using ObtSDK.Utils;
 
 namespace Launcher.View;
 
-[Obfuscation(Exclude = false, Feature = "-rename")]
 public sealed partial class AutoMenu : INotifyPropertyChanged
 {
     private readonly DispatcherTimer _timerCheckDevices = new();
@@ -106,7 +105,7 @@ public sealed partial class AutoMenu : INotifyPropertyChanged
         }
         else
         {
-            ButtonSupport.Content = "Reload Devices";
+            ButtonSupport.Content = "Tìm thiết bị";
         }
     }
 

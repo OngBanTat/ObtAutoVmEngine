@@ -6,10 +6,11 @@ public abstract class QuestBase(Device d)
 {
     private int _countTimeChayNv;
     protected virtual string? QuestName => null;
+    protected string Assets => d.Assets("");
 
-    protected void Delay(int milliseconds = 200)
+    protected async Task Delay(int milliseconds = 200)
     {
-        d.Delay(milliseconds);
+        await d.DelayAsync(milliseconds);
     }
 
     protected abstract Task<bool> DaNhanNv();
@@ -20,8 +21,8 @@ public abstract class QuestBase(Device d)
 
     public virtual async Task<bool> ChayNv()
     {
-        d.Status = "Chạy nhiệm vụ " + (QuestName ?? GetType().Name);
         _countTimeChayNv++;
+        d.Status = "Chạy nhiệm vụ " + (QuestName ?? GetType().Name) + " lần thứ " + _countTimeChayNv;
         if (_countTimeChayNv >= 3) throw new Exception("Không thể chạy được nhiệm vụ " + (QuestName ?? GetType().Name));
 
         if (!await DaNhanNv())
@@ -38,7 +39,7 @@ public abstract class QuestBase(Device d)
             if (await DiLamNv()) continue;
             countFail++;
             if (countFail == 10) return await ChayNv();
-            Delay(5000);
+            await Delay(3000);
         }
 
         _countTimeChayNv = 0;

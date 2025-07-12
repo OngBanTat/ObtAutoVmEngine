@@ -30,33 +30,37 @@
                         <GridView.Columns>
                             <GridViewColumn>
                                 <GridViewColumn.Header>
-                                    <Button Content="ALL DEVICES" Click="OnBtnAllClick" />
+                                    <Button Content="Chọn tất" Click="OnBtnAllClick" Padding="5,1,5,1" />
                                 </GridViewColumn.Header>
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" />
+                                        <StackPanel Orientation="Horizontal">
+                                            <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" />
+                                            <TextBlock Text="{Binding VmIndex}" Margin="5,0,0,0" />
+                                        </StackPanel>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
 
                             </GridViewColumn>
-                            <GridViewColumn Header="TYPE" DisplayMemberBinding="{Binding DType}" />
+                            <GridViewColumn Header="Loại" DisplayMemberBinding="{Binding DType}" />
 
-                            <GridViewColumn Header="DEVICE NAME"
+                            <GridViewColumn Header="Thiết Bị"
                                             DisplayMemberBinding="{Binding DeviceName}" />
-                            <GridViewColumn Header="STAGE" DisplayMemberBinding="{Binding Stage}" />
-                            <GridViewColumn Header="STATUS" Width="250" DisplayMemberBinding="{Binding Status}" />
-                            <GridViewColumn Header="THREAD STAGE" Width="1" DisplayMemberBinding="{Binding TStage}" />
-                            <GridViewColumn Header="ACTION" Width="130">
+                            <GridViewColumn Header="Trạng thái" DisplayMemberBinding="{Binding Stage}" />
+                            <GridViewColumn Header="Thông tin" Width="250" DisplayMemberBinding="{Binding Status}" />
+                            <GridViewColumn Header="Trạng thái luồng" Width="1" DisplayMemberBinding="{Binding TStage}" />
+                            <GridViewColumn Header="Hành Động" Width="155">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal">
-                                            <Button Content="Start" Click="ButtonStart_Click" />
-                                            <Button Content="Stop" Margin="15,0,0,0" Click="ButtonStop_Click" />
-                                            <!-- <Button Content="Pause" Margin="15,0,0,0" Click="ButtonPause_Click" /> -->
-                                            <!-- <Button Content="Resume" Margin="15,0,0,0" Click="ButtonResume_Click" /> -->
-                                            <Button Content="View" Margin="15,0,0,0"
+                                            <Button Content="Chạy" Click="ButtonStart_Click" Background="#4dbd74"
+                                                    Foreground="White" Padding="5,0,5,0" />
+                                            <Button Content="Dừng" Padding="5,0,5,0" Margin="10,0,0,0"
+                                                    Background="#f64846" Foreground="White"
+                                                    Click="ButtonStop_Click" />
+                                            <Button Content="Xem" Padding="5,0,5,0" Margin="10,0,0,0"
                                                     Click="ButtonScreenshot_Click" />
-                                            <Button Content="TEST" Margin="15,0,0,0"
+                                            <Button Content="TEST" Padding="5,0,5,0" Margin="10,0,0,0"
                                                     Click="ButtonTest_OnClick" />
                                         </StackPanel>
                                     </DataTemplate>
@@ -73,11 +77,13 @@
                     <ColumnDefinition />
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
-                <Button Content="STOP CHECKED DEVICES" Grid.Column="0" Click="BtnStopAllClick" Background="Firebrick"
+                <Button Content="Dừng các thiết bị đã chọn" Grid.Column="0" Click="BtnStopAllClick"
+                        Background="Firebrick"
                         Height="30" Margin="3,13,3,3" FontWeight="Bold" FontSize="20" />
-                <Button Content="Mirror all windows" Grid.Column="1" Click="Button_MirrorAll_Click" Background="Snow"
+                <Button Content="Xem toàn bộ cửa sổ" Grid.Column="1" Click="Button_MirrorAll_Click" Background="Snow"
                         Name="ButtonSupport" Height="30" Margin="3,13,3,3" FontWeight="Bold" FontSize="20" />
-                <Button Content="START CHECKED DEVICES" Grid.Column="2" Click="BtnRunAllClick" Background="Chartreuse"
+                <Button Content="Chạy các thiết bị đã chọn" Grid.Column="2" Click="BtnRunAllClick"
+                        Background="Chartreuse"
                         Height="30" Margin="3,13,3,3" FontWeight="Bold" FontSize="20" />
             </Grid>
             <Grid Grid.Row="2" Margin="0,0,0,0">

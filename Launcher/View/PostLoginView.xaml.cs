@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Diagnostics;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Navigation;
@@ -63,14 +64,17 @@ public sealed partial class PostLoginView : INotifyPropertyChanged
 
     private void PostLoginView_OnLoaded(object sender, RoutedEventArgs e)
     {
-        Common.SetInterval(() => { Current = DateTime.Now.ToLocalTime().ToString("dd-MM-yyyy HH:mm:ss"); }, 1000);
+        Common.SetInterval(() =>
+        {
+            Current = DateTime.Now.ToLocalTime().ToString("dd-MM-yyyy HH:mm:ss");
+        }, 1000);
         var epochMilliseconds = Config.Session.User.Additional.ExpiredAt; // Epoch time in milliseconds
         var epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         var date = epoch.AddMilliseconds(epochMilliseconds);
         var dateString = date.ToLocalTime().ToString("dd-MM-yyyy HH:mm:ss");
-        Username = "Login as: " + Config.Session.User.Username + " -- Max: " +
-                   Conf.Instance.ProjectTypeMaxTab[Config.Session.User.Additional.Additional] + " Tabs";
-        ExpireDate = "Expired at: " + dateString;
+        Username = "Tài khoản: " + Config.Session.User.Username + " -- Tối đa: " +
+                   Conf.Instance.ProjectTypeMaxTab[Config.Session.User.Additional.Additional] + " tab giả lập";
+        ExpireDate = "Hạn dùng: " + dateString;
         Current = DateTime.Now.ToLocalTime().ToString("dd-MM-yyyy HH:mm:ss");
     }
 
@@ -82,7 +86,7 @@ public sealed partial class PostLoginView : INotifyPropertyChanged
 
     private void PostLoginView_OnClosed(object sender, EventArgs e)
     {
-        var windowName = "Multi monitor - Created by K9 from Kteam";
+        const string windowName = "Multi monitor - Created by K9 from Kteam";
         WindowHelper.CloseAllWindowsByTitle(windowName);
         Environment.Exit(0);
     }

@@ -6,23 +6,10 @@ using Size = System.Windows.Size;
 
 namespace Launcher.Model;
 
-[Obfuscation(Exclude = false, Feature = "-rename")]
 public class Device : BaseDeviceInfo
 {
     private readonly IObtApiServices _obtApiServices = ObtApiServicesImp.GetInstance();
     protected override Size FixedWindowSize => Conf.Instance.VmScreenSize;
-    private int _index = 0;
-
-    public int Index
-    {
-        get => _index;
-        set
-        {
-            if (value == _index) return;
-            _index = value;
-            OnPropertyChanged();
-        }
-    }
 
     public string Assets(string path)
     {
@@ -32,7 +19,7 @@ public class Device : BaseDeviceInfo
             DeviceType.MEmu => @"assets\data\Memu\" + path,
             DeviceType.Adb => @"assets\data\Adb\" + path,
             DeviceType.LdAdb => @"assets\data\LDPlayer\" + path,
-            DeviceType.LdAndMemuHwnd => throw new ArgumentOutOfRangeException(),
+            DeviceType.MemuAdb => @"assets\data\Memu\" + path,
             _ => throw new ArgumentOutOfRangeException()
         };
     }

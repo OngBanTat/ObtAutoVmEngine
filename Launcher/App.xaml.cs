@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Windows;
@@ -25,8 +26,7 @@ public partial class App : Application
             "65000")
         {
             // Terminate any running adb.exe processes
-            foreach (var process in System.Diagnostics.Process.GetProcessesByName("adb"))
-            {
+            foreach (var process in Process.GetProcessesByName("adb"))
                 try
                 {
                     process.Kill(); // Attempt to kill the process
@@ -37,7 +37,6 @@ public partial class App : Application
                     // Log any exception that occurs while trying to kill the process
                     Console.WriteLine($"Failed to terminate adb.exe process: {ex.Message}");
                 }
-            }
 
             // Set the ADB_LOCAL_TRANSPORT_MAX_PORT environment variable to "65000"
             Environment.SetEnvironmentVariable("ADB_LOCAL_TRANSPORT_MAX_PORT", "65000", EnvironmentVariableTarget.User);
@@ -51,7 +50,7 @@ public partial class App : Application
     private Assembly OnResolveAssembly(object sender, ResolveEventArgs args)
     {
         // Path to the bin folder
-        string binPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,"assemblies");
+        var binPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "assemblies");
 
         // Get the assembly name being requested
         var assemblyName = new AssemblyName(args.Name).Name;
@@ -60,10 +59,7 @@ public partial class App : Application
         var dllPath = Path.Combine(binPath, $"{assemblyName}.dll");
 
         // If the DLL exists, load it
-        if (File.Exists(dllPath))
-        {
-            return Assembly.LoadFrom(dllPath);
-        }
+        if (File.Exists(dllPath)) return Assembly.LoadFrom(dllPath);
 
         return null;
     }
@@ -93,7 +89,6 @@ public partial class App : Application
             SentrySdk.StartSession();
         }
     }
-
 
 
     protected override void OnExit(ExitEventArgs e)

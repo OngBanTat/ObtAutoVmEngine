@@ -48,6 +48,7 @@ public partial class ImageViewer : INotifyPropertyChanged
     private readonly bool isLDPlayer;
     private readonly double scaleX = 1;
     private readonly double scaleY = 1;
+    private string _binThreshold = "128";
     private double _h;
     private Bitmap _img;
     private bool _isBinaryImg;
@@ -69,14 +70,6 @@ public partial class ImageViewer : INotifyPropertyChanged
     private double _y = 20;
     private int currentImgPosX;
     private int currentImgPosY;
-    private string _binThreshold = "128";
-
-
-    public string BinThreshold
-    {
-        get => _binThreshold;
-        set => SetField(ref _binThreshold, value);
-    }
 
     public ImageViewer(Device device)
     {
@@ -110,6 +103,13 @@ public partial class ImageViewer : INotifyPropertyChanged
         Canvas.SetLeft(ImgView, 0);
         Canvas.SetTop(ImgView, 20);
         Closed += (sender, args) => { Common.ClearInterval(ref _updateImageDeviceTimer); };
+    }
+
+
+    public string BinThreshold
+    {
+        get => _binThreshold;
+        set => SetField(ref _binThreshold, value);
     }
 
     public bool IsBinaryImg

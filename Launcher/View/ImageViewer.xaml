@@ -80,7 +80,7 @@
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
                     <CheckBox Grid.Column="0" IsChecked="{Binding IsBinaryImg, Mode=TwoWay}"> Binary </CheckBox>
-                    <TextBox Grid.Column="1"  Text="{Binding BinThreshold, Mode=TwoWay}" />
+                    <TextBox Grid.Column="1" Text="{Binding BinThreshold, Mode=TwoWay}" />
                 </Grid>
                 <Button Grid.Column="1" Click="PauseMirror_OnClick"> Pause </Button>
                 <Button Grid.Column="2" Click="ContinueMirror_OnClick"> Continue </Button>
