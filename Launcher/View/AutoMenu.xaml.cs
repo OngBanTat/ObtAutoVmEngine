@@ -89,11 +89,6 @@ public sealed partial class AutoMenu : INotifyPropertyChanged
         var maxTab = Conf.Instance.ProjectTypeMaxTab[Conf.Instance.AccountConfigId];
         _ = VmHelper.LoadDevices(ListDevices, maxTab, Conf.Instance.SupportDeviceType);
         Console.WriteLine($"Loaded {ListDevices.Count} devices.");
-        int count = 1;
-        foreach (var device in ListDevices)
-        {
-            device.VmIndex = count++;
-        }
     }
 
 
@@ -131,7 +126,11 @@ public sealed partial class AutoMenu : INotifyPropertyChanged
         foreach (var item in ListDevices)
         {
             if (!item.IsSelected) continue;
-            _ = item.StopAutoAsync();
+            Task.Run(async () =>
+            {
+                await item?.StartAutoAsync(BuildAutoThread(item))!;
+                return Task.CompletedTask;
+            });
         }
     }
 
@@ -159,7 +158,11 @@ public sealed partial class AutoMenu : INotifyPropertyChanged
         var clickedButton = (Button)sender;
         // Use the button's DataContext to find out which item it was in the ListView
         var item = clickedButton.DataContext as Device;
-        _ = item?.StartAutoAsync(BuildAutoThread(item));
+        Task.Run(async () =>
+        {
+            await item?.StartAutoAsync(BuildAutoThread(item))!;
+            return Task.CompletedTask;
+        });
     }
 
     private void ButtonStop_Click(object sender, RoutedEventArgs e)
