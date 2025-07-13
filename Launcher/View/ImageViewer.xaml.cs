@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Globalization;
@@ -11,13 +11,13 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using KAutoHelper;
 using Launcher.Model;
 using ObtSDK.AutoAndroidVm;
 using ObtSDK.ObtApis.Services;
 using ObtSDK.Utils;
 using Brushes = System.Windows.Media.Brushes;
 using Color = System.Drawing.Color;
-using Image = System.Drawing.Image;
 using ImageConverter = ObtSDK.ImageServices.ImageConverter;
 using Point = System.Windows.Point;
 using Rectangle = System.Windows.Shapes.Rectangle;
@@ -48,7 +48,6 @@ public partial class ImageViewer : INotifyPropertyChanged
     private readonly bool isLDPlayer;
     private readonly double scaleX = 1;
     private readonly double scaleY = 1;
-    private string _binThreshold = "128";
     private double _h;
     private Bitmap _img;
     private bool _isBinaryImg;
@@ -70,6 +69,14 @@ public partial class ImageViewer : INotifyPropertyChanged
     private double _y = 20;
     private int currentImgPosX;
     private int currentImgPosY;
+    private string _binThreshold = "128";
+
+
+    public string BinThreshold
+    {
+        get => _binThreshold;
+        set => SetField(ref _binThreshold, value);
+    }
 
     public ImageViewer(Device device)
     {
@@ -77,6 +84,11 @@ public partial class ImageViewer : INotifyPropertyChanged
 
         isLDPlayer = this.device.DType == BaseDeviceInfo.DeviceType.LdPlayer;
         InitializeComponent();
+        LocationChanged += (s, e) =>
+        {
+            _isDragging = true;
+            Task.Delay(2000).ContinueWith(_ => _isDragging = false);
+        };
         Title = this.device.DType + " --- " + this.device.DeviceName;
         DataContext = this;
         // _tesseractClient = new TesseractClient();
@@ -105,13 +117,6 @@ public partial class ImageViewer : INotifyPropertyChanged
         Closed += (sender, args) => { Common.ClearInterval(ref _updateImageDeviceTimer); };
     }
 
-
-    public string BinThreshold
-    {
-        get => _binThreshold;
-        set => SetField(ref _binThreshold, value);
-    }
-
     public bool IsBinaryImg
     {
         get => _isBinaryImg;
@@ -120,40 +125,52 @@ public partial class ImageViewer : INotifyPropertyChanged
 
     public event PropertyChangedEventHandler? PropertyChanged;
 
+    private bool _isDragging;
+
     public void EnableMirrorDevice()
     {
-        _updateImageDeviceTimer = Common.SetInterval(() =>
+        _updateImageDeviceTimer = Common.SetInterval(async () =>
         {
-            var img = device.GetCurrentScreen();
-            if (IsBinaryImg)
+            if (_isDragging) return; // Skip updates while dragging
+            Bitmap img = device.GetCurrentScreen();
+            BitmapImage bitmapImage = null;
+            await Task.Run(() =>
             {
-                var ok = int.TryParse(BinThreshold, out var threshold);
-                if (!ok || threshold < 0) threshold = 128;
-                img = ImageConverter.ImgToBinary(img, threshold);
-            }
+                var sizePlus = device.GetSizePlus();
+                img = CaptureHelper.CropImage(img, new System.Drawing.Rectangle(0, (int)Math.Round(sizePlus.Height),
+                    img.Width - (int)Math.Round(sizePlus.Width), img.Height));
+                if (IsBinaryImg)
+                {
+                    var ok = int.TryParse(BinThreshold, out var threshold);
+                    if (!ok || threshold < 0) threshold = 128;
+                    img = ImageConverter.ImgToBinary(img, threshold);
+                }
 
-            var sizePlus = device.GetSizePlus();
-            img = CropImage(img, new System.Drawing.Rectangle(0, (int)Math.Round(sizePlus.Height),
-                img.Width - (int)Math.Round(sizePlus.Width), img.Height));
-            using var memory = new MemoryStream();
-            img.Save(memory, ImageFormat.Png);
-            memory.Position = 0;
-            var bitmapImage = new BitmapImage();
-            bitmapImage.BeginInit();
-            bitmapImage.StreamSource = memory;
-            bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-            bitmapImage.EndInit();
-            bitmapImage.Freeze();
-            try
+                using var memory = new MemoryStream();
+                img.Save(memory, ImageFormat.Png);
+                memory.Position = 0;
+                var tempBitmapImage = new BitmapImage();
+                tempBitmapImage.BeginInit();
+                tempBitmapImage.StreamSource = memory;
+                tempBitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                tempBitmapImage.EndInit();
+                tempBitmapImage.Freeze();
+                bitmapImage = tempBitmapImage;
+            });
+
+            Dispatcher.Invoke(() =>
             {
-                ImgView.Source = bitmapImage;
-                _img = new Bitmap(memory);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
-        }, 16);
+                try
+                {
+                    ImgView.Source = bitmapImage;
+                    _img = new Bitmap(new MemoryStream(((MemoryStream)bitmapImage.StreamSource).ToArray()));
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                }
+            });
+        }, 100); // Increase interval to 100ms
     }
 
 
@@ -189,15 +206,6 @@ public partial class ImageViewer : INotifyPropertyChanged
     private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
-
-    private static Bitmap CropImage(Bitmap img, System.Drawing.Rectangle cropRect)
-    {
-        var bitmap2 = new Bitmap((int)cropRect.Width, (int)cropRect.Height);
-        using var graphics = Graphics.FromImage((Image)bitmap2);
-        graphics.DrawImage((Image)img, new System.Drawing.Rectangle(0, 0, bitmap2.Width, bitmap2.Height),
-            cropRect, GraphicsUnit.Pixel);
-        return bitmap2;
     }
 
     private bool SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
@@ -246,6 +254,7 @@ public partial class ImageViewer : INotifyPropertyChanged
 
         MainCanvas.Children.Add(_rect);
         MainCanvas.Children.Add(_textBlock);
+        _isDragging = true;
     }
 
     private void MainCanvas_MouseMove(object sender, MouseEventArgs e)
@@ -279,6 +288,7 @@ public partial class ImageViewer : INotifyPropertyChanged
         _textBlocks.Add(_textBlock);
         _rect = null;
         _textBlock = null;
+        _isDragging = false;
     }
 
     private void MainCanvas_OnMouseRightButtonDown(object sender, MouseButtonEventArgs e)
@@ -325,7 +335,7 @@ public partial class ImageViewer : INotifyPropertyChanged
             sy = a.PixelHeight / a.Height;
         }
 
-        var img2 = CropImage(_img, new System.Drawing.Rectangle(
+        var img2 = CaptureHelper.CropImage(_img, new System.Drawing.Rectangle(
             (int)Math.Round(_x * sx), (int)Math.Round((_y - 20) * sy),
             (int)Math.Round(_w * sx), (int)Math.Round(_h * sy)));
         // Common.CopyBitmapToClipboard(img2);
@@ -475,7 +485,7 @@ public partial class ImageViewer : INotifyPropertyChanged
             sy = a.PixelHeight / a.Height;
         }
 
-        var img2 = CropImage(_img, new System.Drawing.Rectangle(
+        var img2 = CaptureHelper.CropImage(_img, new System.Drawing.Rectangle(
             (int)Math.Round(_x * sx), (int)Math.Round((_y - 20) * sy),
             (int)Math.Round(_w * sx), (int)Math.Round(_h * sy)));
         // Common.CopyBitmapToClipboard(img2);
