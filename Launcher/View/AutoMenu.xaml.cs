@@ -126,11 +126,7 @@ public sealed partial class AutoMenu : INotifyPropertyChanged
         foreach (var item in ListDevices)
         {
             if (!item.IsSelected) continue;
-            Task.Run(async () =>
-            {
-                await item?.StartAutoAsync(BuildAutoThread(item))!;
-                return Task.CompletedTask;
-            });
+            Stop(item);
         }
     }
 
@@ -139,10 +135,10 @@ public sealed partial class AutoMenu : INotifyPropertyChanged
         foreach (var item in ListDevices)
         {
             if (!item.IsSelected) continue;
-            _ = item.StartAutoAsync(BuildAutoThread(item));
+            Start(item);
         }
     }
-
+    
     private Func<Task> BuildAutoThread(Device item)
     {
         return async () =>
@@ -158,18 +154,36 @@ public sealed partial class AutoMenu : INotifyPropertyChanged
         var clickedButton = (Button)sender;
         // Use the button's DataContext to find out which item it was in the ListView
         var item = clickedButton.DataContext as Device;
-        Task.Run(async () =>
+        Start(item!);
+    }
+
+    private void Start(Device item)
+    {
+        if (item.Cts != null)
         {
-            await item?.StartAutoAsync(BuildAutoThread(item))!;
-            return Task.CompletedTask;
-        });
+            item.Cts.Cancel();
+            item.Cts.Dispose();
+            item.Cts = new CancellationTokenSource();
+        }
+
+        Task.Run(async () => { await item.StartAutoAsync(BuildAutoThread(item)); },
+            item.Cts?.Token ?? CancellationToken.None);
+    }
+
+    private void Stop(Device item)
+    {
+        _ = item.StopAutoAsync();
+        item.Cts?.Cancel();
+        item.Cts?.Dispose();
+        item.Cts = null;
     }
 
     private void ButtonStop_Click(object sender, RoutedEventArgs e)
     {
         var item = (sender as Button)?.DataContext as Device;
-        _ = item?.StopAutoAsync();
+        Stop(item!);
     }
+
 
     // private void ButtonPause_Click(object sender, RoutedEventArgs e)
     // {

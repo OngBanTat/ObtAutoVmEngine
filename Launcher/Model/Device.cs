@@ -10,6 +10,7 @@ public class Device : BaseDeviceInfo
 {
     private readonly IObtApiServices _obtApiServices = ObtApiServicesImp.GetInstance();
     protected override Size FixedWindowSize => Conf.Instance.VmScreenSize;
+    public CancellationTokenSource? Cts { get; set; }
 
     public string Assets(string path)
     {
