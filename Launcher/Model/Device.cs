@@ -10,7 +10,19 @@ public class Device : BaseDeviceInfo
 {
     private readonly IObtApiServices _obtApiServices = ObtApiServicesImp.GetInstance();
     protected override Size FixedWindowSize => Conf.Instance.VmScreenSize;
-    public CancellationTokenSource? Cts { get; set; }
+
+    /// <summary>
+    /// Stops the current operation or process on the device by throwing an exception
+    /// if a cancellation has been requested through the associated cancellation token.
+    /// This method ensures any ongoing operation adheres to the requested cancellation state.
+    /// </summary>
+    /// <exception cref="System.OperationCanceledException">
+    /// Thrown when the cancellation token signals a cancellation request.
+    /// </exception>
+    public void TriggerStop()
+    {
+        CancellationTokenSource?.Token.ThrowIfCancellationRequested();
+    }
 
     public string Assets(string path)
     {
@@ -23,6 +35,12 @@ public class Device : BaseDeviceInfo
             DeviceType.MemuAdb => @"assets\data\Memu\" + path,
             _ => throw new ArgumentOutOfRangeException()
         };
+    }
+
+    public new async Task Delay(int milliseconds = 200)
+    {
+        TriggerStop();
+        await DelayAsync(milliseconds);
     }
 
 
@@ -43,16 +61,13 @@ public class Device : BaseDeviceInfo
             }
     }
 
-
-    public void NhapNoiDung(string noidung, bool clearField = false)
+    public async Task NhapNoiDung(string noidung, bool clearField = false)
     {
         if (clearField)
             DelChars(200);
-        Delay(100);
+        await Delay(100);
         SendText(noidung, 2);
-        Delay(500);
-        ClickOnPosition(899, 500);
-        Delay();
+        await Delay(500);
     }
 
     #endregion

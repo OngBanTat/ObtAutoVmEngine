@@ -126,7 +126,7 @@ public sealed partial class AutoMenu : INotifyPropertyChanged
         foreach (var item in ListDevices)
         {
             if (!item.IsSelected) continue;
-            Stop(item);
+            _ = Stop(item);
         }
     }
 
@@ -159,29 +159,21 @@ public sealed partial class AutoMenu : INotifyPropertyChanged
 
     private void Start(Device item)
     {
-        if (item.Cts != null)
-        {
-            item.Cts.Cancel();
-            item.Cts.Dispose();
-            item.Cts = new CancellationTokenSource();
-        }
-
-        Task.Run(async () => { await item.StartAutoAsync(BuildAutoThread(item)); },
-            item.Cts?.Token ?? CancellationToken.None);
+        Task.Run(async () => { await item.StartAutoAsync(BuildAutoThread(item)); });
     }
 
-    private void Stop(Device item)
+    private async Task Stop(Device item)
     {
-        _ = item.StopAutoAsync();
-        item.Cts?.Cancel();
-        item.Cts?.Dispose();
-        item.Cts = null;
+        await item.StopAutoAsync();
+        await item.DelayAsync();
+        await item.StopAutoAsync();
+        
     }
 
     private void ButtonStop_Click(object sender, RoutedEventArgs e)
     {
         var item = (sender as Button)?.DataContext as Device;
-        Stop(item!);
+        _ = Stop(item!);
     }
 
 
