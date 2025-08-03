@@ -1,28 +1,15 @@
 ﻿using System.IO;
-using System.Reflection;
 using ObtSDK.AutoAndroidVm;
-using ObtSDK.ObtApis.Services;
+using ObtSDK.Utils;
 using Size = System.Windows.Size;
 
 namespace Launcher.Model;
 
 public class Device : BaseDeviceInfo
 {
-    private readonly IObtApiServices _obtApiServices = ObtApiServicesImp.GetInstance();
     protected override Size FixedWindowSize => Conf.Instance.VmScreenSize;
 
-    /// <summary>
-    /// Stops the current operation or process on the device by throwing an exception
-    /// if a cancellation has been requested through the associated cancellation token.
-    /// This method ensures any ongoing operation adheres to the requested cancellation state.
-    /// </summary>
-    /// <exception cref="System.OperationCanceledException">
-    /// Thrown when the cancellation token signals a cancellation request.
-    /// </exception>
-    public void TriggerStop()
-    {
-        CancellationTokenSource?.Token.ThrowIfCancellationRequested();
-    }
+    public new CancellationTokenSource? CancellationTokenSource => base.CancellationTokenSource;
 
     public string Assets(string path)
     {
@@ -35,12 +22,6 @@ public class Device : BaseDeviceInfo
             DeviceType.MemuAdb => @"assets\data\Memu\" + path,
             _ => throw new ArgumentOutOfRangeException()
         };
-    }
-
-    public new async Task Delay(int milliseconds = 200)
-    {
-        TriggerStop();
-        await DelayAsync(milliseconds);
     }
 
 
@@ -61,14 +42,18 @@ public class Device : BaseDeviceInfo
             }
     }
 
+
     public async Task NhapNoiDung(string noidung, bool clearField = false)
     {
+        ThrowIfStop();        
         if (clearField)
-            DelChars(200);
-        await Delay(100);
-        SendText(noidung, 2);
-        await Delay(500);
+            await DelCharsAsync(40);
+        await DelayAsync();
+        await SendTextAsync(noidung);
+        await DelayAsync();
+        while (await FindAndClickAsync(Assets("btn_xong.png"), 0.7, 3, 3, 0, 49, 61, 32)) await DelayAsync(1000);
     }
+
 
     #endregion
 }

@@ -9,6 +9,7 @@ using System.Windows.Controls;
 using System.Windows.Threading;
 using Launcher.Controller;
 using Launcher.Model;
+using ObtSDK;
 using ObtSDK.AutoAndroidVm;
 using ObtSDK.Utils;
 
@@ -74,6 +75,8 @@ public sealed partial class AutoMenu : INotifyPropertyChanged
     private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        PropertyHelper.SavePropertiesToFile(this, @"assets\config\auto_menu.json",
+            Conf.SaveProperties);
     }
 
     private bool SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
@@ -89,6 +92,29 @@ public sealed partial class AutoMenu : INotifyPropertyChanged
         var maxTab = Conf.Instance.ProjectTypeMaxTab[Conf.Instance.AccountConfigId];
         _ = VmHelper.LoadDevices(ListDevices, maxTab, Conf.Instance.SupportDeviceType);
         Console.WriteLine($"Loaded {ListDevices.Count} devices.");
+        var count = 0;
+        foreach (var item in ListDevices)
+        {
+            count++;
+            item.VmIndex = count;
+            try
+            {
+                PropertyHelper.LoadPropertiesFromFile(item, @"assets\config\device_" + item.DeviceName + ".json");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+        }
+
+        try
+        {
+            PropertyHelper.LoadPropertiesFromFile(this, @"assets\config\auto_menu.json");
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
     }
 
 
@@ -138,12 +164,14 @@ public sealed partial class AutoMenu : INotifyPropertyChanged
             Start(item);
         }
     }
-    
+
+
     private Func<Task> BuildAutoThread(Device item)
     {
         return async () =>
         {
             var autoController = new AutoController(item);
+            item.ThrowIfStop();
             await autoController.Run();
         };
     }
@@ -159,15 +187,19 @@ public sealed partial class AutoMenu : INotifyPropertyChanged
 
     private void Start(Device item)
     {
-        Task.Run(async () => { await item.StartAutoAsync(BuildAutoThread(item)); });
+        Task.Run(async () =>
+        {
+            await Stop(item); // Ensure any previous auto is stopped
+
+            PropertyHelper.SavePropertiesToFile(item, @"assets\config\device_" + item.DeviceName + ".json",
+                Conf.SaveProperties);
+            await item.StartAutoAsync(BuildAutoThread(item));
+        });
     }
 
     private async Task Stop(Device item)
     {
         await item.StopAutoAsync();
-        await item.DelayAsync();
-        await item.StopAutoAsync();
-        
     }
 
     private void ButtonStop_Click(object sender, RoutedEventArgs e)
@@ -176,18 +208,6 @@ public sealed partial class AutoMenu : INotifyPropertyChanged
         _ = Stop(item!);
     }
 
-
-    // private void ButtonPause_Click(object sender, RoutedEventArgs e)
-    // {
-    //     var item = (sender as Button)?.DataContext as Device;
-    //     item?.PauseAuto();
-    // }
-    //
-    // private void ButtonResume_Click(object sender, RoutedEventArgs e)
-    // {
-    //     var item = (sender as Button)?.DataContext as Device;
-    //     item?.ResumeAuto();
-    // }
 
     private void ButtonScreenshot_Click(object sender, RoutedEventArgs e)
     {
@@ -200,6 +220,13 @@ public sealed partial class AutoMenu : INotifyPropertyChanged
 
     private void ButtonTest_OnClick(object sender, RoutedEventArgs e)
     {
+        if (!Config.Debug)
+        {
+            MessageBox.Show("Chỉ cho phép chạy trong chế độ nhà phát triển", "Thông báo", MessageBoxButton.OK,
+                MessageBoxImage.Information);
+            return; // Only allow testing in debug mode
+        }
+
         var device = (sender as Button)?.DataContext as Device;
         if (device.TestThread != null) device.TestThread.Abort();
         device.TestThread = new Thread(() => { Console.WriteLine(new AutoController(device).Test()); });

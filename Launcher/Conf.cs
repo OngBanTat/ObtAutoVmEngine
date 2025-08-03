@@ -6,6 +6,7 @@ namespace Launcher;
 
 public class Conf : Config
 {
+    public static List<string> SaveProperties = ["IsSelected"];
     public static Config Instance => _instance ??= new Conf();
     public override Size VmScreenSize => new(960, 540);
     public override string APP_TITLE => "AutoVM By OBT";

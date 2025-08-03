@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Launcher.View.AutoMenu"
+<UserControl x:Class="Launcher.View.AutoMenu"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -54,8 +54,8 @@
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal">
                                             <Button Content="Chạy" Click="ButtonStart_Click" Background="#4dbd74"
-                                                    Foreground="White" Padding="5,0,5,0" />
-                                            <Button Content="Dừng" Padding="5,0,5,0" Margin="10,0,0,0"
+                                                    Foreground="White" Padding="5,0,5,0" IsEnabled="{Binding IsStopped}"/>
+                                            <Button Content="Dừng" Padding="5,0,5,0" Margin="10,0,0,0"  IsEnabled="{Binding IsRunning}"
                                                     Background="#f64846" Foreground="White"
                                                     Click="ButtonStop_Click" />
                                             <Button Content="Xem" Padding="5,0,5,0" Margin="10,0,0,0"

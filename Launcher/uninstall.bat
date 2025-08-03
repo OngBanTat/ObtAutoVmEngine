@@ -1,13 +1,11 @@
-@echo off
+﻿@echo off
 
-:: Shut down the adb server
+echo Shutting down ADB server...
 adb\adb.exe kill-server
 
-:: Go back to the parent directory
+echo Removing current folder and its contents...
 cd ..
-
-:: Remove the directory where the script was located
 rmdir /s /q "%~dp0"
 
-:: Exit
-exit
+echo Uninstallation complete.
+pause

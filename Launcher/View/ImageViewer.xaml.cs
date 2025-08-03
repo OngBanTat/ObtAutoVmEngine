@@ -1,4 +1,4 @@
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Globalization;
@@ -91,27 +91,6 @@ public partial class ImageViewer : INotifyPropertyChanged
         };
         Title = this.device.DType + " --- " + this.device.DeviceName;
         DataContext = this;
-        // _tesseractClient = new TesseractClient();
-        // var bitmap = new BitmapImage();
-        // bitmap.BeginInit();
-        // bitmap.UriSource = new Uri(imagePath);
-        // bitmap.CacheOption = BitmapCacheOption.OnLoad;
-        // bitmap.EndInit();
-        // bitmap.Freeze();
-        // if (isLdPlayer)
-        // {
-        //     scaleX = bitmap.PixelWidth / bitmap.Width;
-        //     scaleY = bitmap.PixelHeight / bitmap.Height;
-        // }
-        //
-        // ImgView.Source = bitmap;
-        // var ms = new MemoryStream();
-        // var encoder = new BmpBitmapEncoder();
-        // encoder.Frames.Add(BitmapFrame.Create(bitmap));
-        // encoder.Save(ms);
-        // ms.Position = 0;
-        // _img = new Bitmap(ms);
-        // File.Delete(imagePath);
         Canvas.SetLeft(ImgView, 0);
         Canvas.SetTop(ImgView, 20);
         Closed += (sender, args) => { Common.ClearInterval(ref _updateImageDeviceTimer); };
@@ -126,13 +105,15 @@ public partial class ImageViewer : INotifyPropertyChanged
     public event PropertyChangedEventHandler? PropertyChanged;
 
     private bool _isDragging;
+    private bool _isUpdatingImage = false;
 
     public void EnableMirrorDevice()
     {
         _updateImageDeviceTimer = Common.SetInterval(async () =>
         {
-            if (_isDragging) return; // Skip updates while dragging
-            Bitmap img = device.GetCurrentScreen();
+            if (_isDragging || _isUpdatingImage) return; // Skip updates while dragging
+            _isUpdatingImage = true;
+            var img = await Task.Run(() => device.GetCurrentScreen());
             BitmapImage bitmapImage = null;
             await Task.Run(() =>
             {
@@ -143,7 +124,7 @@ public partial class ImageViewer : INotifyPropertyChanged
                 {
                     var ok = int.TryParse(BinThreshold, out var threshold);
                     if (!ok || threshold < 0) threshold = 128;
-                    img = ImageConverter.ImgToBinary(img, threshold);
+                    img = Task.Run(() => ImageConverter.ImgToBinary(img, threshold)).Result;
                 }
 
                 using var memory = new MemoryStream();
@@ -169,8 +150,10 @@ public partial class ImageViewer : INotifyPropertyChanged
                 {
                     Console.WriteLine(e);
                 }
+
+                _isUpdatingImage = false;
             });
-        }, 100); // Increase interval to 100ms
+        }, 1);
     }
 
 

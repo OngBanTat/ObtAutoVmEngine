@@ -64,9 +64,10 @@ public sealed partial class PostLoginView : INotifyPropertyChanged
 
     private void PostLoginView_OnLoaded(object sender, RoutedEventArgs e)
     {
-        Common.SetInterval(() =>
+        Common.SetInterval(Task () =>
         {
             Current = DateTime.Now.ToLocalTime().ToString("dd-MM-yyyy HH:mm:ss");
+            return Task.CompletedTask;
         }, 1000);
         var epochMilliseconds = Config.Session.User.Additional.ExpiredAt; // Epoch time in milliseconds
         var epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);

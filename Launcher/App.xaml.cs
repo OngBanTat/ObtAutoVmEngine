@@ -1,4 +1,4 @@
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Windows;
@@ -46,7 +46,6 @@ public partial class App : Application
         AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
         DispatcherUnhandledException += OnDispatcherUnhandledException;
         TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;
-        CacheAssets();
     }
 
     private Assembly OnResolveAssembly(object sender, ResolveEventArgs args)
@@ -64,21 +63,6 @@ public partial class App : Application
         if (File.Exists(dllPath)) return Assembly.LoadFrom(dllPath);
 
         return null;
-    }
-
-    private void CacheAssets()
-    {
-        // Cache assets if needed
-        if (Directory.Exists("assets"))
-        {
-            var assetFiles = Directory.GetFiles("assets", "*.png", SearchOption.AllDirectories);
-            foreach (var file in assetFiles)
-            {
-                if (Config.Debug)
-                    Console.WriteLine($"Caching asset: {file} ");
-                BaseDeviceInfo.GetImage(file);
-            }
-        }
     }
 
     protected override void OnStartup(StartupEventArgs e)
